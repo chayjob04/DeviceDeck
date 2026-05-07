@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Enterprise IT & Infrastructure Solutions — DeviceDeck</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+*,
+*::before,
+*::after{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --white:#ffffff;
+  --black:#0d0d0d;
+  --off:#f7f6f3;
+
+  --amber:#f59e0b;
+  --amber-light:#fef3c7;
+  --amber-dark:#b45309;
+
+  --gray:#6b7280;
+  --gray-light:#e5e7eb;
+
+  --green:#16a34a;
+
+  --radius:18px;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Instrument Sans',sans-serif;
+  background:var(--off);
+  color:var(--black);
+  overflow-x:hidden;
+}
+
+/* NAVBAR */
+
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:500;
+  height:70px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 64px;
+
+  background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(20px);
+
+  border-bottom:1px solid var(--gray-light);
+}
+
+.logo{
+  text-decoration:none;
+  color:var(--black);
+
+  font-family:'Clash Display',sans-serif;
+  font-size:1.4rem;
+  font-weight:700;
+}
+
+.logo em{
+  font-style:normal;
+  background:var(--amber);
+  padding:2px 6px;
+  border-radius:6px;
+}
+
+.nav-links{
+  display:flex;
+  gap:32px;
+  list-style:none;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:var(--gray);
+  font-size:.9rem;
+  font-weight:600;
+  transition:.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--black);
+}
+
+.nav-right{
+  display:flex;
+  gap:12px;
+}
+
+.nav-login{
+  padding:10px 18px;
+  border-radius:10px;
+  border:1px solid var(--gray-light);
+
+  text-decoration:none;
+  color:var(--black);
+
+  font-size:.88rem;
+  font-weight:600;
+}
+
+.nav-btn{
+  padding:10px 20px;
+  border-radius:10px;
+
+  background:var(--black);
+  color:var(--white);
+
+  text-decoration:none;
+
+  font-size:.88rem;
+  font-weight:700;
+
+  transition:.2s;
+}
+
+.nav-btn:hover{
+  background:var(--amber);
+  color:var(--black);
+}
+
+/* HERO */
+
+.hero{
+  padding:150px 64px 90px;
+  background:var(--white);
+
+  border-bottom:1px solid var(--gray-light);
+}
+
+.hero-inner{
+  max-width:1250px;
+  margin:auto;
+
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:50px;
+  align-items:center;
+}
+
+.hero-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  padding:8px 14px;
+
+  background:var(--amber-light);
+  border:1px solid #fcd34d;
+
+  border-radius:999px;
+
+  font-size:.82rem;
+  font-weight:700;
+
+  color:var(--amber-dark);
+
+  margin-bottom:22px;
+}
+
+.hero h1{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2.7rem,6vw,5rem);
+  line-height:1;
+  letter-spacing:-2px;
+
+  margin-bottom:20px;
+}
+
+.hero p{
+  font-size:1.02rem;
+  line-height:1.8;
+
+  color:var(--gray);
+
+  max-width:620px;
+
+  margin-bottom:34px;
+}
+
+.hero-buttons{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.btn-primary{
+  background:var(--black);
+  color:var(--white);
+
+  text-decoration:none;
+
+  padding:16px 24px;
+  border-radius:14px;
+
+  font-size:.92rem;
+  font-weight:700;
+
+  transition:.2s;
+}
+
+.btn-primary:hover{
+  background:var(--amber);
+  color:var(--black);
+}
+
+.btn-secondary{
+  border:1px solid var(--gray-light);
+
+  color:var(--black);
+  text-decoration:none;
+
+  padding:16px 24px;
+  border-radius:14px;
+
+  font-size:.92rem;
+  font-weight:700;
+}
+
+.hero-card{
+  background:var(--black);
+  color:var(--white);
+
+  border-radius:26px;
+
+  padding:38px;
+
+  position:relative;
+
+  overflow:hidden;
+}
+
+.hero-card::before{
+  content:'';
+  position:absolute;
+
+  width:240px;
+  height:240px;
+
+  background:rgba(245,158,11,.18);
+
+  border-radius:50%;
+
+  top:-80px;
+  right:-80px;
+}
+
+.hero-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.8rem;
+
+  margin-bottom:16px;
+}
+
+.hero-card p{
+  color:#d1d5db;
+  margin-bottom:26px;
+}
+
+.hero-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.stat{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:18px;
+  padding:20px;
+}
+
+.stat h2{
+  font-size:2rem;
+  margin-bottom:6px;
+}
+
+.stat span{
+  font-size:.82rem;
+  color:#d1d5db;
+}
+
+/* SECTION */
+
+.section{
+  padding:90px 64px;
+}
+
+.section-inner{
+  max-width:1250px;
+  margin:auto;
+}
+
+.section-tag{
+  color:var(--amber-dark);
+
+  font-size:.82rem;
+  font-weight:700;
+
+  margin-bottom:12px;
+}
+
+.section-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+
+  letter-spacing:-1px;
+
+  margin-bottom:18px;
+}
+
+.section-desc{
+  color:var(--gray);
+
+  max-width:700px;
+
+  line-height:1.8;
+
+  margin-bottom:50px;
+}
+
+/* SERVICES */
+
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:24px;
+}
+
+.service-card{
+  background:var(--white);
+
+  border:1px solid var(--gray-light);
+
+  border-radius:24px;
+
+  padding:34px;
+
+  transition:.25s;
+}
+
+.service-card:hover{
+  transform:translateY(-4px);
+  border-color:#d4d4d8;
+}
+
+.service-icon{
+  width:60px;
+  height:60px;
+
+  border-radius:16px;
+
+  background:var(--amber-light);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:1.6rem;
+
+  margin-bottom:22px;
+}
+
+.service-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.4rem;
+
+  margin-bottom:12px;
+}
+
+.service-card p{
+  color:var(--gray);
+  line-height:1.8;
+
+  margin-bottom:20px;
+}
+
+.service-card ul{
+  padding-left:18px;
+  color:var(--gray);
+
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+/* FORM */
+
+.form-wrap{
+  display:grid;
+  grid-template-columns:1fr .85fr;
+  gap:30px;
+}
+
+.form-card{
+  background:var(--white);
+
+  border:1px solid var(--gray-light);
+
+  border-radius:28px;
+
+  padding:38px;
+}
+
+.form-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.8rem;
+
+  margin-bottom:12px;
+}
+
+.form-card p{
+  color:var(--gray);
+  line-height:1.8;
+
+  margin-bottom:30px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-size:.85rem;
+  font-weight:700;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+
+  padding:14px 15px;
+
+  border-radius:14px;
+
+  border:1.5px solid var(--gray-light);
+
+  font-family:'Instrument Sans',sans-serif;
+
+  background:var(--white);
+
+  font-size:.92rem;
+
+  outline:none;
+
+  transition:.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--amber);
+
+  box-shadow:0 0 0 3px rgba(245,158,11,.12);
+}
+
+textarea{
+  min-height:150px;
+  resize:vertical;
+}
+
+.submit-btn{
+  width:100%;
+
+  margin-top:12px;
+
+  border:none;
+
+  background:var(--black);
+  color:var(--white);
+
+  padding:16px;
+
+  border-radius:16px;
+
+  font-size:.95rem;
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.submit-btn:hover{
+  background:var(--amber);
+  color:var(--black);
+}
+
+/* INFO CARD */
+
+.info-card{
+  background:var(--black);
+  color:var(--white);
+
+  border-radius:28px;
+
+  padding:38px;
+
+  height:100%;
+}
+
+.info-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.8rem;
+
+  margin-bottom:20px;
+}
+
+.info-list{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.info-item{
+  padding:18px;
+
+  border-radius:18px;
+
+  background:rgba(255,255,255,.06);
+
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.info-item h4{
+  margin-bottom:8px;
+}
+
+.info-item p{
+  color:#d1d5db;
+  font-size:.9rem;
+  line-height:1.7;
+}
+
+/* SUCCESS */
+
+.success{
+  margin-top:20px;
+
+  padding:18px;
+
+  border-radius:18px;
+
+  background:#dcfce7;
+  border:1px solid #86efac;
+
+  color:#166534;
+
+  display:none;
+
+  line-height:1.7;
+}
+
+/* REVEAL */
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+
+  transition:all .7s ease;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:none;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1024px){
+
+  .hero-inner,
+  .form-wrap{
+    grid-template-columns:1fr;
+  }
+
+  .services-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:768px){
+
+  nav{
+    padding:0 20px;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero,
+  .section{
+    padding-left:24px;
+    padding-right:24px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+
+<nav>
+
+<a href="index.html" class="logo">
+  Device<em>Deck</em>
+</a>
+
+<ul class="nav-links">
+  <li><a href="index.html">Home</a></li>
+  <li><a href="pc-builds.html">PC Builds</a></li>
+  <li><a href="mobile-services.html">Mobile Services</a></li>
+  <li><a href="it-infrastructure.html" class="active">IT Infrastructure</a></li>
+</ul>
+
+<div class="nav-right">
+  <a href="login.html" class="nav-login">Log In</a>
+  <a href="#inquiry" class="nav-btn">Enterprise Inquiry</a>
+</div>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-inner">
+
+  <div class="reveal">
+
+    <div class="hero-tag">
+      Enterprise IT Solutions
+    </div>
+
+    <h1>
+      Bulk Computer Supply & Enterprise Infrastructure Solutions
+    </h1>
+
+    <p>
+      DeviceDeck provides complete enterprise technology solutions including bulk desktop deployment, computer lab setup, networking, server installation, and multi-year maintenance contracts for schools, colleges, institutions, and businesses.
+    </p>
+
+    <div class="hero-buttons">
+
+      <a href="#inquiry" class="btn-primary">
+        Request Consultation
+      </a>
+
+      <a href="#services" class="btn-secondary">
+        Explore Services
+      </a>
+
+    </div>
+
+  </div>
+
+  <div class="hero-card reveal">
+
+    <h3>
+      Trusted Enterprise Deployment Partner
+    </h3>
+
+    <p>
+      End-to-end deployment, installation, and long-term maintenance support for institutions and businesses.
+    </p>
+
+    <div class="hero-stats">
+
+      <div class="stat">
+        <h2>500+</h2>
+        <span>Systems Deployed</span>
+      </div>
+
+      <div class="stat">
+        <h2>24/7</h2>
+        <span>Support Assistance</span>
+      </div>
+
+      <div class="stat">
+        <h2>5 Yr</h2>
+        <span>AMC Contracts</span>
+      </div>
+
+      <div class="stat">
+        <h2>99%</h2>
+        <span>Client Satisfaction</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- SERVICES -->
+
+<section class="section" id="services">
+
+<div class="section-inner">
+
+  <div class="section-tag">
+    Enterprise Services
+  </div>
+
+  <h2 class="section-title">
+    Complete IT Infrastructure Solutions
+  </h2>
+
+  <p class="section-desc">
+    From bulk computer deployment to long-term maintenance contracts, DeviceDeck handles the complete lifecycle of enterprise IT infrastructure.
+  </p>
+
+  <div class="services-grid">
+
+    <div class="service-card reveal">
+
+      <div class="service-icon">🖥️</div>
+
+      <h3>Bulk Computer Supply</h3>
+
+      <p>
+        Large-scale desktop and workstation supply for educational institutions, offices, and IT companies.
+      </p>
+
+      <ul>
+        <li>Computer lab systems</li>
+        <li>Office workstations</li>
+        <li>Employee systems</li>
+        <li>High-performance enterprise PCs</li>
+      </ul>
+
+    </div>
+
+    <div class="service-card reveal">
+
+      <div class="service-icon">🌐</div>
+
+      <h3>Network Infrastructure</h3>
+
+      <p>
+        Complete networking deployment and connectivity setup for institutions and enterprise environments.
+      </p>
+
+      <ul>
+        <li>WiFi deployment</li>
+        <li>Structured networking</li>
+        <li>Switches & routers</li>
+        <li>Internet optimization</li>
+      </ul>
+
+    </div>
+
+    <div class="service-card reveal">
+
+      <div class="service-icon">🗄️</div>
+
+      <h3>Server Deployment</h3>
+
+      <p>
+        Enterprise server installation, setup, configuration, and infrastructure optimization.
+      </p>
+
+      <ul>
+        <li>Server installation</li>
+        <li>Storage systems</li>
+        <li>Backup infrastructure</li>
+        <li>Deployment support</li>
+      </ul>
+
+    </div>
+
+    <div class="service-card reveal">
+
+      <div class="service-icon">🛠️</div>
+
+      <h3>AMC & Maintenance</h3>
+
+      <p>
+        Multi-year Annual Maintenance Contracts with dedicated support and technician assistance.
+      </p>
+
+      <ul>
+        <li>Preventive maintenance</li>
+        <li>On-site support</li>
+        <li>Hardware servicing</li>
+        <li>Long-term support contracts</li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- INQUIRY -->
+
+<section class="section" id="inquiry">
+
+<div class="section-inner">
+
+  <div class="section-tag">
+    Enterprise Inquiry
+  </div>
+
+  <h2 class="section-title">
+    Tell Us Your Requirement
+  </h2>
+
+  <p class="section-desc">
+    Share your institution or company requirements and our enterprise solutions team will contact you with consultation and proposal details.
+  </p>
+
+  <div class="form-wrap">
+
+    <!-- FORM -->
+
+    <div class="form-card reveal">
+
+      <h3>
+        Enterprise Requirement Form
+      </h3>
+
+      <p>
+        Fill in your institution or company requirements and DeviceDeck will provide a tailored infrastructure solution.
+      </p>
+
+      <form id="enterpriseForm">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Institution / Company Name</label>
+            <input type="text" id="company" placeholder="Enter institution or company name">
+          </div>
+
+          <div class="form-group">
+            <label>Institution Type</label>
+            <select id="type">
+              <option value="">Select Type</option>
+              <option>School</option>
+              <option>College</option>
+              <option>University</option>
+              <option>IT Company</option>
+              <option>Training Institute</option>
+              <option>Corporate Office</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input type="text" id="person" placeholder="Contact person name">
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="Phone number">
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="Email address">
+          </div>
+
+          <div class="form-group">
+            <label>Approx. Number of Systems</label>
+            <input type="number" id="systems" placeholder="Example: 50">
+          </div>
+
+          <div class="form-group">
+            <label>Need Server Setup?</label>
+            <select id="server">
+              <option value="">Select Option</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Maintenance Contract</label>
+            <select id="contract">
+              <option value="">Select Duration</option>
+              <option>1 Year</option>
+              <option>3 Years</option>
+              <option>5 Years</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Requirement Description</label>
+            <textarea id="message" placeholder="Example: We need a 60-system computer lab setup with networking and long-term maintenance support for our engineering college."></textarea>
+          </div>
+
+        </div>
+
+        <button type="button" class="submit-btn" onclick="submitInquiry()">
+          Submit Enterprise Inquiry →
+        </button>
+
+        <div class="success" id="successBox">
+          ✅ Inquiry submitted successfully.<br><br>
+          Our enterprise solutions team will contact you soon with consultation and proposal details.
+        </div>
+
+      </form>
+
+    </div>
+
+    <!-- INFO -->
+
+    <div class="info-card reveal">
+
+      <h3>
+        Why Institutions Choose DeviceDeck
+      </h3>
+
+      <div class="info-list">
+
+        <div class="info-item">
+          <h4>Bulk Deployment Expertise</h4>
+          <p>
+            Large-scale desktop deployment for schools, colleges, labs, and enterprise environments.
+          </p>
+        </div>
+
+        <div class="info-item">
+          <h4>Dedicated Enterprise Support</h4>
+          <p>
+            Long-term technical support and AMC contracts with dedicated maintenance assistance.
+          </p>
+        </div>
+
+        <div class="info-item">
+          <h4>End-to-End Infrastructure</h4>
+          <p>
+            From supply and installation to networking and maintenance — DeviceDeck handles everything.
+          </p>
+        </div>
+
+        <div class="info-item">
+          <h4>Scalable Enterprise Solutions</h4>
+          <p>
+            Infrastructure designed for educational institutions, growing businesses, and IT companies.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<script>
+
+function submitInquiry(){
+
+  const requiredFields = [
+    'company',
+    'type',
+    'person',
+    'phone',
+    'email',
+    'systems',
+    'server',
+    'contract',
+    'message'
+  ];
+
+  let valid = true;
+
+  requiredFields.forEach(id=>{
+
+    const field = document.getElementById(id);
+
+    if(!field.value.trim()){
+
+      field.style.borderColor = '#dc2626';
+      field.style.background = '#fef2f2';
+
+      valid = false;
+
+    }else{
+
+      field.style.borderColor = '';
+      field.style.background = '';
+
+    }
+
+  });
+
+  if(!valid){
+    return;
+  }
+
+  document.getElementById('successBox').style.display = 'block';
+
+  window.scrollTo({
+    top:document.getElementById('successBox').offsetTop - 120,
+    behavior:'smooth'
+  });
+
+}
+
+/* REVEAL */
+
+const observer = new IntersectionObserver((entries)=>{
+
+  entries.forEach(entry=>{
+
+    if(entry.isIntersecting){
+
+      entry.target.classList.add('active');
+
+      observer.unobserve(entry.target);
+
+    }
+
+  });
+
+},{threshold:0.12});
+
+document.querySelectorAll('.reveal').forEach(el=>{
+  observer.observe(el);
+});
+
+</script>
+
+</body>
+</html>
