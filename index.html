@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DeviceDeck — Tech Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --white:#ffffff;
+  --black:#0c0c0c;
+  --off:#f7f6f3;
+  --amber:#f59e0b;
+  --amber-light:#fef3c7;
+  --amber-dark:#b45309;
+  --gray:#6b7280;
+  --gray-light:#e5e4e0;
+  --radius:14px;
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--white);
+  color:var(--black);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:16px;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 64px;height:68px;
+  background:rgba(255,255,255,0.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--gray-light);
+  animation:slideDown .5s ease both;
+}
+.logo{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:1.35rem;
+  letter-spacing:-0.5px;color:var(--black);
+  text-decoration:none;
+}
+.logo em{
+  font-style:normal;
+  background:var(--amber);
+  color:var(--black);
+  padding:1px 6px;border-radius:4px;
+  margin-left:1px;
+}
+.nav-links{display:flex;gap:34px;list-style:none;}
+.nav-links a{
+  color:var(--gray);text-decoration:none;
+  font-size:0.88rem;font-weight:500;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--black);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-login{
+  background:transparent;color:var(--black);
+  padding:10px 20px;border-radius:8px;
+  font-size:0.88rem;font-weight:600;
+  text-decoration:none;
+  border:1.5px solid var(--gray-light);
+  transition:border-color .2s,background .2s;
+}
+.nav-login:hover{border-color:var(--black);background:var(--off);}
+.nav-cta{
+  background:var(--black);color:var(--white);
+  padding:10px 22px;border-radius:8px;
+  font-size:0.88rem;font-weight:600;
+  text-decoration:none;
+  border:1.5px solid var(--black);
+  transition:background .2s,color .2s;
+}
+.nav-cta:hover{background:var(--amber);color:var(--black);border-color:var(--amber);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  background:var(--white);
+  position:relative;overflow:hidden;
+}
+.hero-noise{
+  position:absolute;inset:0;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background-size:180px;
+  pointer-events:none;opacity:.4;
+}
+.hero-line{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:1px;height:100%;
+  background:linear-gradient(to bottom, transparent, var(--gray-light) 30%, var(--gray-light) 70%, transparent);
+  z-index:0;
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--amber-light);
+  border:1px solid #fcd34d;
+  color:var(--amber-dark);
+  border-radius:100px;padding:6px 16px;
+  font-size:0.78rem;font-weight:600;
+  margin-bottom:32px;
+  position:relative;z-index:1;
+  animation:fadeUp .6s .15s ease both;
+}
+.badge-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--amber);
+  animation:blink 2s infinite;
+}
+
+h1{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2.8rem,7.5vw,5.6rem);
+  font-weight:700;line-height:1.04;
+  letter-spacing:-2px;
+  max-width:860px;
+  position:relative;z-index:1;
+  animation:fadeUp .65s .28s ease both;
+}
+h1 .stripe{
+  position:relative;display:inline-block;
+}
+h1 .stripe::after{
+  content:'';
+  position:absolute;left:0;bottom:6px;right:0;
+  height:14px;
+  background:var(--amber);
+  opacity:.35;
+  z-index:-1;
+  border-radius:2px;
+}
+
+.hero-sub{
+  margin-top:22px;max-width:500px;
+  color:var(--gray);font-size:1.05rem;line-height:1.7;
+  position:relative;z-index:1;
+  animation:fadeUp .65s .42s ease both;
+}
+
+.hero-actions{
+  display:flex;gap:12px;margin-top:40px;
+  flex-wrap:wrap;justify-content:center;
+  position:relative;z-index:1;
+  animation:fadeUp .65s .55s ease both;
+}
+.btn-dark{
+  background:var(--black);color:var(--white);
+  padding:15px 32px;border-radius:10px;
+  font-weight:600;font-size:0.95rem;
+  text-decoration:none;
+  border:1.5px solid var(--black);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-dark:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.18);}
+.btn-outline{
+  border:1.5px solid var(--gray-light);
+  color:var(--black);padding:15px 32px;border-radius:10px;
+  font-weight:500;font-size:0.95rem;
+  text-decoration:none;background:transparent;
+  transition:border-color .2s,background .2s;
+}
+.btn-outline:hover{border-color:var(--black);background:var(--off);}
+
+/* Stats strip */
+.stats-strip{
+  display:flex;gap:0;
+  margin-top:72px;
+  border:1px solid var(--gray-light);
+  border-radius:var(--radius);
+  overflow:hidden;
+  position:relative;z-index:1;
+  animation:fadeUp .65s .68s ease both;
+}
+.stat-item{
+  flex:1;text-align:center;
+  padding:22px 28px;
+  border-right:1px solid var(--gray-light);
+}
+.stat-item:last-child{border-right:none;}
+.stat-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.9rem;font-weight:700;
+  color:var(--black);letter-spacing:-1px;
+}
+.stat-num span{color:var(--amber);}
+.stat-label{font-size:0.78rem;color:var(--gray);margin-top:3px;}
+
+/* ── MARQUEE ── */
+.marquee-wrap{
+  border-top:1px solid var(--gray-light);
+  border-bottom:1px solid var(--gray-light);
+  padding:16px 0;overflow:hidden;background:var(--off);
+}
+.marquee-track{
+  display:flex;gap:48px;width:max-content;
+  animation:marquee 22s linear infinite;
+}
+.marquee-item{
+  font-family:'Clash Display',sans-serif;
+  font-size:0.82rem;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gray);white-space:nowrap;
+  display:flex;align-items:center;gap:16px;
+}
+.marquee-item::before{content:'◆';color:var(--amber);font-size:0.6rem;}
+
+/* ── SERVICES ── */
+.section{padding:96px 64px;max-width:1200px;margin:0 auto;}
+.section-eyebrow{
+  font-size:0.75rem;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--amber-dark);margin-bottom:12px;
+}
+.section-heading{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(1.9rem,4vw,2.9rem);
+  font-weight:700;letter-spacing:-1px;
+  margin-bottom:52px;
+  max-width:540px;
+  line-height:1.15;
+}
+.section-heading em{font-style:normal;color:var(--gray);}
+
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+  border:1px solid var(--gray-light);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.service-card{
+  background:var(--white);
+  padding:40px 36px;
+  border-right:1px solid var(--gray-light);
+  position:relative;overflow:hidden;
+  transition:background .25s;
+  cursor:default;
+}
+.service-card:last-child{border-right:none;}
+.service-card:hover{background:var(--off);}
+.service-card::after{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--amber);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.service-card:hover::after{transform:scaleX(1);}
+
+.service-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:0.75rem;font-weight:700;
+  color:var(--amber);letter-spacing:2px;
+  margin-bottom:28px;
+  display:block;
+}
+.service-icon-box{
+  width:52px;height:52px;
+  border:1px solid var(--gray-light);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:22px;
+  background:var(--white);
+  transition:border-color .25s,background .25s;
+}
+.service-card:hover .service-icon-box{
+  border-color:var(--amber);
+  background:var(--amber-light);
+}
+.service-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.15rem;font-weight:700;
+  margin-bottom:12px;letter-spacing:-0.3px;
+}
+.service-card p{color:var(--gray);font-size:0.9rem;line-height:1.65;}
+.service-more{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:24px;color:var(--black);
+  font-size:0.85rem;font-weight:600;
+  text-decoration:none;
+  transition:gap .2s,color .2s;
+}
+.service-more:hover{gap:10px;color:var(--amber-dark);}
+
+/* ── FEATURES ── */
+.features-wrap{background:var(--black);padding:96px 64px;}
+.features-inner{max-width:1200px;margin:0 auto;}
+.features-wrap .section-eyebrow{color:var(--amber);}
+.features-wrap .section-heading{color:var(--white);}
+.features-wrap .section-heading em{color:#6b7280;}
+
+.features-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:1px;background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--radius);overflow:hidden;
+}
+.feature-item{
+  background:var(--black);
+  padding:36px 32px;
+  display:flex;gap:20px;align-items:flex-start;
+  transition:background .25s;
+}
+.feature-item:hover{background:#111;}
+.feature-icon{
+  width:44px;height:44px;flex-shrink:0;
+  border:1px solid rgba(245,158,11,.3);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;
+  background:rgba(245,158,11,.08);
+  margin-top:2px;
+}
+.feature-item h4{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:1rem;
+  color:var(--white);margin-bottom:6px;
+}
+.feature-item p{color:#6b7280;font-size:0.88rem;line-height:1.6;}
+
+/* ── PROCESS ── */
+.process-wrap{background:var(--off);padding:96px 64px;}
+.process-inner{max-width:1200px;margin:0 auto;}
+.process-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;margin-top:52px;
+  position:relative;
+}
+.process-steps::before{
+  content:'';
+  position:absolute;top:28px;left:14%;right:14%;
+  height:1px;background:var(--gray-light);
+  z-index:0;
+}
+.step{text-align:center;position:relative;z-index:1;padding:0 12px;}
+.step-circle{
+  width:56px;height:56px;border-radius:50%;
+  border:1.5px solid var(--gray-light);
+  background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:1rem;
+  color:var(--black);
+  transition:border-color .3s,background .3s,color .3s;
+}
+.step:hover .step-circle{
+  background:var(--amber);
+  border-color:var(--amber);
+  color:var(--black);
+  box-shadow:0 0 0 6px rgba(245,158,11,.12);
+}
+.step h4{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:0.95rem;
+  margin-bottom:8px;
+}
+.step p{color:var(--gray);font-size:0.85rem;line-height:1.6;}
+
+/* ── CTA ── */
+.cta-wrap{padding:96px 64px;}
+.cta-inner{
+  max-width:1200px;margin:0 auto;
+  background:var(--black);
+  border-radius:20px;
+  padding:80px 70px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:40px;
+  position:relative;overflow:hidden;
+}
+.cta-inner::before{
+  content:'';
+  position:absolute;right:-60px;top:-60px;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,.18),transparent 70%);
+}
+.cta-text h2{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(1.8rem,3.5vw,2.5rem);
+  font-weight:700;color:var(--white);
+  letter-spacing:-0.8px;margin-bottom:10px;
+}
+.cta-text p{color:#6b7280;font-size:0.95rem;max-width:420px;line-height:1.65;}
+.cta-actions{display:flex;gap:12px;flex-shrink:0;}
+.btn-amber{
+  background:var(--amber);color:var(--black);
+  padding:15px 30px;border-radius:10px;
+  font-weight:700;font-size:0.95rem;
+  text-decoration:none;white-space:nowrap;
+  border:1.5px solid var(--amber);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-amber:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,158,11,.35);}
+.btn-white-outline{
+  border:1.5px solid rgba(255,255,255,.15);
+  color:var(--white);padding:15px 28px;border-radius:10px;
+  font-weight:500;font-size:0.95rem;
+  text-decoration:none;white-space:nowrap;
+  transition:border-color .2s,background .2s;
+}
+.btn-white-outline:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--gray-light);
+  padding:28px 64px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:0.82rem;color:var(--gray);
+}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{color:var(--gray);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--black);}
+
+/* ── ANIMATIONS ── */
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:none;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:none;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  nav{padding:0 24px;}
+  .nav-links{display:none;}
+  .section,.features-wrap,.process-wrap,.cta-wrap{padding:64px 24px;}
+  .services-grid{grid-template-columns:1fr;}
+  .service-card{border-right:none;border-bottom:1px solid var(--gray-light);}
+  .service-card:last-child{border-bottom:none;}
+  .features-grid{grid-template-columns:1fr;}
+  .process-steps{grid-template-columns:1fr 1fr;gap:32px;}
+  .process-steps::before{display:none;}
+  .stats-strip{flex-wrap:wrap;}
+  .stat-item{border-right:none;border-bottom:1px solid var(--gray-light);}
+  .cta-inner{flex-direction:column;padding:48px 32px;text-align:center;}
+  .cta-text p{max-width:100%;}
+  .cta-actions{flex-direction:column;width:100%;}
+  .cta-actions a{text-align:center;}
+  footer{flex-direction:column;gap:14px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Device<em>Deck</em></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="nav-login">Log In</a>
+    <a href="#contact" class="nav-cta">Get a Quote</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-line"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    India's Premium Tech Partner
+  </div>
+
+  <h1>Tech Solutions<br/>Built to <span class="stripe">Perform.</span></h1>
+
+  <p class="hero-sub">Custom PC builds, Full IT infrastructure setups & Mobile repairs— done right the first time.</p>
+
+  <div class="hero-actions">
+    <a href="#services" class="btn-dark">Explore Services</a>
+    <a href="#contact" class="btn-outline">Talk to Us →</a>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num">500<span>+</span></div>
+      <div class="stat-label">Builds Completed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98<span>%</span></div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3<span>yr</span></div>
+      <div class="stat-label">Service Warranty</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24<span>h</span></div>
+      <div class="stat-label">Avg Turnaround</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Custom PC Builds</span>
+    <span class="marquee-item">Mobile Repairs</span>
+    <span class="marquee-item">IT Infrastructure</span>
+    <span class="marquee-item">Network Setup</span>
+    <span class="marquee-item">Server Installation</span>
+    <span class="marquee-item">Screen Replacement</span>
+    <span class="marquee-item">Gaming Rigs</span>
+    <span class="marquee-item">Workstations</span>
+    <span class="marquee-item">Custom PC Builds</span>
+    <span class="marquee-item">Mobile Repairs</span>
+    <span class="marquee-item">IT Infrastructure</span>
+    <span class="marquee-item">Network Setup</span>
+    <span class="marquee-item">Server Installation</span>
+    <span class="marquee-item">Screen Replacement</span>
+    <span class="marquee-item">Gaming Rigs</span>
+    <span class="marquee-item">Workstations</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <p class="section-eyebrow reveal">What We Do</p>
+  <h2 class="section-heading reveal">Services built for <em>every need</em></h2>
+  <div class="services-grid reveal">
+
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <div class="service-icon-box">🖥️</div>
+      <h3>Custom PC Builds</h3>
+      <p>Gaming rigs, workstations, or home setups — every component hand-picked for your budget, assembled and stress-tested before delivery.</p>
+      <a href="#contact" class="service-more">Get a build quote →</a>
+    </div>
+
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <div class="service-icon-box">📱</div>
+      <h3>IT Infrastructure</h3>
+      <p>Networks, servers, structured cabling, cloud migrations, and ongoing IT support for homes and businesses of all sizes.</p>
+      <a href="#contact" class="service-more">Book a repair →</a>
+    </div>
+
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <div class="service-icon-box">🔧</div>
+      <h3>Mobile Services</h3>
+      <p>Screen replacements, battery swaps, charging ports, software issues — all major brands handled with certified-quality parts.</p>
+      <a href="#contact" class="service-more">Plan your setup →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES / WHY US -->
+<div class="features-wrap" id="why">
+  <div class="features-inner">
+    <p class="section-eyebrow reveal">Why DeviceDeck</p>
+    <h2 class="section-heading reveal">Expert hands,<br/><em>every time</em></h2>
+    <div class="features-grid reveal">
+
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div>
+          <h4>Fast Turnaround</h4>
+          <p>Most repairs done same day. PC builds ready within 48 hours. We respect your time and never keep you waiting.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">🛡️</div>
+        <div>
+          <h4>Warranty on All Work</h4>
+          <p>Every service comes with a full warranty. If something isn't right, we fix it — no questions, no charges.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <div>
+          <h4>Transparent Pricing</h4>
+          <p>You receive a full cost breakdown before we touch anything. Zero hidden fees, zero surprises at pickup.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon">🤝</div>
+        <div>
+          <h4>Local & Trusted</h4>
+          <p>Based in Hyderabad, serving real people with genuine care — not a faceless national chain.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<div class="process-wrap" id="process">
+  <div class="process-inner">
+    <p class="section-eyebrow reveal">How It Works</p>
+    <h2 class="section-heading reveal">Simple process,<br/><em>zero hassle</em></h2>
+    <div class="process-steps">
+
+      <div class="step reveal">
+        <div class="step-circle">01</div>
+        <h4>Tell Us What You Need</h4>
+        <p>Reach out with your requirement — repair, build, or infrastructure. We'll ask the right questions.</p>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-circle">02</div>
+        <h4>Get a Clear Quote</h4>
+        <p>We send a full breakdown — no jargon, no hidden costs — before any work begins.</p>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-circle">03</div>
+        <h4>We Get to Work</h4>
+        <p>Our technicians handle everything with precision. You get updates throughout the process.</p>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-circle">04</div>
+        <h4>Delivered & Warranted</h4>
+        <p>Pick up your device or get it delivered — backed by our full service warranty.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap" id="contact">
+  <div class="cta-inner reveal">
+    <div class="cta-text">
+      <h2>Ready to get started?</h2>
+      <p>Tell us what you need — we'll respond within a few hours with a quote and timeline.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="mailto:hello@devicedeck.in" class="btn-amber">Email Us</a>
+      <a href="tel:+919999999999" class="btn-white-outline">📞 Call Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="logo" style="font-size:1.1rem;">Device<em style="background:var(--amber);color:var(--black);padding:1px 5px;border-radius:3px;font-style:normal;">Deck</em></a>
+  <span>© 2026 DeviceDeck. Hyderabad, India.</span>
+  <div class="footer-links">
+    <a href="#">Instagram</a>
+    <a href="#">WhatsApp</a>
+    <a href="#">Privacy</a>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 90);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
