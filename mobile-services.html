@@ -1,0 +1,1061 @@
+# mobile-services.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mobile Services — DeviceDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --white:#ffffff;
+  --black:#0c0c0c;
+  --off:#f7f6f3;
+  --amber:#f59e0b;
+  --amber-light:#fef3c7;
+  --amber-dark:#b45309;
+  --gray:#6b7280;
+  --gray-light:#e5e4e0;
+  --radius:14px;
+  --green:#16a34a;
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--off);
+  color:var(--black);
+  font-family:'Instrument Sans',sans-serif;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 64px;
+  height:68px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--gray-light);
+}
+
+.logo{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;
+  font-size:1.35rem;
+  letter-spacing:-0.5px;
+  color:var(--black);
+  text-decoration:none;
+}
+
+.logo em{
+  font-style:normal;
+  background:var(--amber);
+  color:var(--black);
+  padding:1px 6px;
+  border-radius:4px;
+  margin-left:1px;
+}
+
+.nav-links{
+  display:flex;
+  gap:34px;
+  list-style:none;
+}
+
+.nav-links a{
+  color:var(--gray);
+  text-decoration:none;
+  font-size:0.88rem;
+  font-weight:500;
+  transition:color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--black);
+}
+
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-login{
+  background:transparent;
+  color:var(--black);
+  padding:10px 20px;
+  border-radius:8px;
+  font-size:0.88rem;
+  font-weight:600;
+  text-decoration:none;
+  border:1.5px solid var(--gray-light);
+}
+
+.nav-cta{
+  background:var(--black);
+  color:var(--white);
+  padding:10px 22px;
+  border-radius:8px;
+  font-size:0.88rem;
+  font-weight:600;
+  text-decoration:none;
+  border:1.5px solid var(--black);
+}
+
+.nav-cta:hover{
+  background:var(--amber);
+  color:var(--black);
+  border-color:var(--amber);
+}
+
+/* HEADER */
+.page-header{
+  padding:120px 64px 48px;
+  background:var(--white);
+  border-bottom:1px solid var(--gray-light);
+}
+
+.page-header-inner{
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.breadcrumb{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:0.8rem;
+  color:var(--gray);
+  margin-bottom:18px;
+}
+
+.breadcrumb a{
+  color:var(--gray);
+  text-decoration:none;
+}
+
+.breadcrumb span{color:var(--amber);}
+
+.page-header h1{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2.2rem,5vw,3.5rem);
+  font-weight:700;
+  letter-spacing:-1.2px;
+  margin-bottom:12px;
+}
+
+.page-header p{
+  color:var(--gray);
+  font-size:1rem;
+  max-width:560px;
+  line-height:1.7;
+}
+
+/* LAYOUT */
+.section-wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:56px 64px;
+}
+
+.booking-layout{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:28px;
+  align-items:start;
+}
+
+/* FORM SECTIONS */
+.form-section{
+  background:var(--white);
+  border:1.5px solid var(--gray-light);
+  border-radius:18px;
+  padding:30px;
+  margin-bottom:18px;
+  transition:border-color .2s,transform .2s;
+}
+
+.form-section:hover{
+  border-color:#d4d4d4;
+}
+
+.form-section:focus-within{
+  border-color:var(--amber);
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.section-num{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:var(--black);
+  color:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;
+}
+
+.section-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.section-sub{
+  font-size:0.82rem;
+  color:var(--gray);
+  margin-top:2px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  font-size:0.82rem;
+  font-weight:600;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px 14px;
+  border-radius:10px;
+  border:1.5px solid var(--gray-light);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:0.9rem;
+  background:var(--white);
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(245,158,11,.1);
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+/* PROBLEM TYPE */
+.problem-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.problem-card{
+  border:1.5px solid var(--gray-light);
+  border-radius:18px;
+  padding:28px;
+  cursor:pointer;
+  transition:all .25s;
+  background:var(--white);
+}
+
+.problem-card:hover{
+  border-color:var(--amber);
+  transform:translateY(-3px);
+}
+
+.problem-card.active{
+  border-color:var(--amber);
+  background:var(--amber-light);
+}
+
+.problem-icon{
+  font-size:2rem;
+  margin-bottom:18px;
+}
+
+.problem-card h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem;
+  margin-bottom:8px;
+}
+
+.problem-card p{
+  color:var(--gray);
+  font-size:0.88rem;
+  line-height:1.6;
+}
+
+/* ISSUE OPTIONS */
+.issue-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.issue-option{
+  border:1.5px solid var(--gray-light);
+  border-radius:12px;
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all .2s;
+  background:var(--white);
+  font-size:0.88rem;
+  font-weight:600;
+}
+
+.issue-option:hover{
+  border-color:var(--amber);
+}
+
+.issue-option.active{
+  border-color:var(--amber);
+  background:var(--amber-light);
+}
+
+.hidden{
+  display:none;
+}
+
+/* SUMMARY */
+.summary-panel{
+  background:var(--white);
+  border:1.5px solid var(--gray-light);
+  border-radius:18px;
+  padding:28px;
+  position:sticky;
+  top:100px;
+}
+
+.summary-panel h3{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.1rem;
+  margin-bottom:22px;
+}
+
+.summary-list{
+  list-style:none;
+  border:1px solid var(--gray-light);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:22px;
+}
+
+.summary-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 14px;
+  border-bottom:1px solid var(--gray-light);
+  font-size:0.84rem;
+}
+
+.summary-item:last-child{
+  border-bottom:none;
+}
+
+.s-label{
+  color:var(--gray);
+}
+
+.s-value{
+  font-weight:600;
+  text-align:right;
+}
+
+.booking-note{
+  background:var(--amber-light);
+  border:1px solid #fcd34d;
+  border-radius:12px;
+  padding:16px;
+  font-size:0.82rem;
+  line-height:1.6;
+  color:var(--amber-dark);
+  margin-bottom:20px;
+}
+
+.btn-book{
+  width:100%;
+  background:var(--black);
+  color:var(--white);
+  border:none;
+  padding:15px;
+  border-radius:12px;
+  font-size:0.95rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+}
+
+.btn-book:hover{
+  background:var(--amber);
+  color:var(--black);
+  transform:translateY(-2px);
+}
+
+/* SUCCESS MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s;
+  z-index:500;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:all;
+}
+
+.modal-box{
+  background:var(--white);
+  border-radius:22px;
+  max-width:520px;
+  width:100%;
+  padding:42px;
+  text-align:center;
+  transform:translateY(20px);
+  transition:transform .3s;
+}
+
+.modal.show .modal-box{
+  transform:none;
+}
+
+.success-icon{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  background:#dcfce7;
+  color:var(--green);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 22px;
+  font-size:2.2rem;
+}
+
+.modal-box h2{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.8rem;
+  margin-bottom:12px;
+}
+
+.modal-box p{
+  color:var(--gray);
+  line-height:1.7;
+  margin-bottom:24px;
+}
+
+.modal-btn{
+  background:var(--black);
+  color:var(--white);
+  padding:14px 24px;
+  border-radius:10px;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+
+.reveal.in{
+  opacity:1;
+  transform:none;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .booking-layout{
+    grid-template-columns:1fr;
+  }
+
+  .summary-panel{
+    position:static;
+  }
+}
+
+@media(max-width:768px){
+  nav{
+    padding:0 20px;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .page-header,
+  .section-wrap{
+    padding-left:24px;
+    padding-right:24px;
+  }
+
+  .form-grid,
+  .problem-grid,
+  .issue-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Device<em>Deck</em></a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="pc-builds.html">PC Builds</a></li>
+    <li><a href="mobile-services.html" class="active">Mobile Services</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a href="login.html" class="nav-login">Log In</a>
+    <a href="#booking" class="nav-cta">Book Service</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span>Mobile Services</span>
+    </div>
+
+    <h1>Mobile Repair & Service</h1>
+
+    <p>
+      Select your phone, describe the issue, and schedule a technician visit directly to your home.
+    </p>
+
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="section-wrap" id="booking">
+
+  <div class="booking-layout">
+
+    <!-- LEFT -->
+    <div>
+
+      <!-- PHONE DETAILS -->
+      <div class="form-section reveal">
+
+        <div class="section-head">
+          <div class="section-num">01</div>
+          <div>
+            <div class="section-title">Phone Details</div>
+            <div class="section-sub">Select your device information</div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Brand</label>
+            <select id="brand" onchange="updateSummary()">
+              <option value="">Select Brand</option>
+              <option>Apple</option>
+              <option>Samsung</option>
+              <option>OnePlus</option>
+              <option>Xiaomi</option>
+              <option>Realme</option>
+              <option>Oppo</option>
+              <option>Vivo</option>
+              <option>Google Pixel</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Model</label>
+            <select id="model" onchange="updateSummary()">
+              <option value="">Select Model</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Storage</label>
+            <select id="storage" onchange="updateSummary()">
+              <option value="">Select Storage</option>
+              <option>64GB</option>
+              <option>128GB</option>
+              <option>256GB</option>
+              <option>512GB</option>
+              <option>1TB</option>
+            </select>
+          </div>
+
+          
+
+        </div>
+      </div>
+
+      <!-- PROBLEM TYPE -->
+      <div class="form-section reveal">
+
+        <div class="section-head">
+          <div class="section-num">02</div>
+          <div>
+            <div class="section-title">Problem Type</div>
+            <div class="section-sub">Choose the issue category</div>
+          </div>
+        </div>
+
+        <div class="problem-grid">
+
+          <div class="problem-card" onclick="selectProblem('hardware', this)">
+            <div class="problem-icon">🔧</div>
+            <h3>Hardware Problem</h3>
+            <p>
+              Physical damage or component-related issues like screen, battery, speaker, charging port and more.
+            </p>
+          </div>
+
+          <div class="problem-card" onclick="selectProblem('software', this)">
+            <div class="problem-icon">💻</div>
+            <h3>Software Problem</h3>
+            <p>
+              System crashes, lagging, boot issues, app problems, virus issues and other software-related faults.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- HARDWARE -->
+      <div class="form-section reveal hidden" id="hardwareSection">
+
+        <div class="section-head">
+          <div class="section-num">03</div>
+          <div>
+            <div class="section-title">Hardware Issue</div>
+            <div class="section-sub">Select the damaged component</div>
+          </div>
+        </div>
+
+        <div class="issue-grid">
+          <div class="issue-option" onclick="selectIssue(this,'Screen Damage')">📱 Screen Damage</div>
+          <div class="issue-option" onclick="selectIssue(this,'Battery Problem')">🔋 Battery Problem</div>
+          <div class="issue-option" onclick="selectIssue(this,'Charging Port')">🔌 Charging Port</div>
+          <div class="issue-option" onclick="selectIssue(this,'Speaker Issue')">🔊 Speaker Issue</div>
+          <div class="issue-option" onclick="selectIssue(this,'Camera Problem')">📷 Camera Problem</div>
+          <div class="issue-option" onclick="selectIssue(this,'Water Damage')">💧 Water Damage</div>
+          <div class="issue-option" onclick="selectIssue(this,'Mic Not Working')">🎤 Mic Problem</div>
+          <div class="issue-option" onclick="selectIssue(this,'Other')">➕ Other</div>
+        </div>
+
+      </div>
+
+      <!-- SOFTWARE -->
+      <div class="form-section reveal hidden" id="softwareSection">
+
+        <div class="section-head">
+          <div class="section-num">03</div>
+          <div>
+            <div class="section-title">Software Issue</div>
+            <div class="section-sub">Select the software problem</div>
+          </div>
+        </div>
+
+        <div class="issue-grid">
+          <div class="issue-option" onclick="selectIssue(this,'Phone Lagging')">🐌 Phone Lagging</div>
+          <div class="issue-option" onclick="selectIssue(this,'Phone Not Turning On')">⚠️ Phone Not Turning On</div>
+          <div class="issue-option" onclick="selectIssue(this,'App Crashes')">📲 App Crashes</div>
+          <div class="issue-option" onclick="selectIssue(this,'Boot Loop')">🔄 Boot Loop</div>
+          <div class="issue-option" onclick="selectIssue(this,'Virus / Malware')">🦠 Virus / Malware</div>
+          <div class="issue-option" onclick="selectIssue(this,'WiFi / Network Issue')">📡 Network Issue</div>
+          <div class="issue-option" onclick="selectIssue(this,'Software Update Failed')">⬆️ Update Failed</div>
+          <div class="issue-option" onclick="selectIssue(this,'Other')">➕ Other</div>
+        </div>
+
+      </div>
+
+      <!-- OTHER ISSUE -->
+      <div class="form-section reveal hidden" id="otherSection">
+
+        <div class="section-head">
+          <div class="section-num">04</div>
+          <div>
+            <div class="section-title">Describe Your Problem</div>
+            <div class="section-sub">Explain the issue in detail</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <textarea id="customIssue" placeholder="Describe your phone issue here..." oninput="updateSummary()"></textarea>
+        </div>
+
+      </div>
+
+      <!-- CUSTOMER DETAILS -->
+      <div class="form-section reveal">
+
+        <div class="section-head">
+          <div class="section-num">05</div>
+          <div>
+            <div class="section-title">Customer Details</div>
+            <div class="section-sub">Technician visit information</div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="customerName" placeholder="Your name" oninput="updateSummary()">
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="customerPhone" placeholder="Your mobile number">
+          </div>
+
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="whatsapp" placeholder="WhatsApp number">
+          </div>
+
+          <div class="form-group">
+            <label>Preferred Time</label>
+            <select>
+              <option>Morning (9AM - 12PM)</option>
+              <option>Afternoon (12PM - 4PM)</option>
+              <option>Evening (4PM - 8PM)</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Address</label>
+            <textarea placeholder="Enter your complete address"></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="summary-panel reveal">
+
+      <h3>📋 Booking Summary</h3>
+
+      <ul class="summary-list">
+
+        <li class="summary-item">
+          <span class="s-label">Brand</span>
+          <span class="s-value" id="sBrand">—</span>
+        </li>
+
+        <li class="summary-item">
+          <span class="s-label">Model</span>
+          <span class="s-value" id="sModel">—</span>
+        </li>
+
+        <li class="summary-item">
+          <span class="s-label">Storage</span>
+          <span class="s-value" id="sStorage">—</span>
+        </li>
+
+        <li class="summary-item">
+          <span class="s-label">Problem Type</span>
+          <span class="s-value" id="sType">—</span>
+        </li>
+
+        <li class="summary-item">
+          <span class="s-label">Issue</span>
+          <span class="s-value" id="sIssue">—</span>
+        </li>
+
+        <li class="summary-item">
+          <span class="s-label">Customer</span>
+          <span class="s-value" id="sCustomer">—</span>
+        </li>
+
+      </ul>
+
+      <div class="booking-note">
+        ✅ Technician details will be shared via WhatsApp after booking confirmation.
+      </div>
+
+      <button class="btn-book" onclick="confirmBooking()">
+        Confirm Booking →
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal" id="successModal">
+
+  <div class="modal-box">
+
+    <div class="success-icon">✓</div>
+
+    <h2>Booking Confirmed</h2>
+
+    <p>
+      Your service request has been successfully booked.
+      <br><br>
+      A DeviceDeck technician will visit your home soon.
+      Technician details and ETA will be shared to your WhatsApp number shortly.
+    </p>
+
+    <button class="modal-btn" onclick="closeModal()">
+      Done
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+let selectedType = '';
+let selectedIssue = '';
+
+const modelsByBrand = {
+  Apple:[
+    'iPhone 11','iPhone 12','iPhone 13','iPhone 14','iPhone 15','iPhone 16 Pro'
+  ],
+
+  Samsung:[
+    'Galaxy S21','Galaxy S22','Galaxy S23','Galaxy S24 Ultra','Galaxy A54'
+  ],
+
+  OnePlus:[
+    'OnePlus 9','OnePlus 10 Pro','OnePlus 11','OnePlus 12R'
+  ],
+
+  Xiaomi:[
+    'Redmi Note 12','Redmi Note 13','Xiaomi 13 Pro','Poco X6'
+  ],
+
+  Realme:[
+    'Realme 11','Realme Narzo 70','Realme GT 6'
+  ],
+
+  Oppo:[
+    'Oppo Reno 10','Oppo Reno 11','Oppo F27'
+  ],
+
+  Vivo:[
+    'Vivo V29','Vivo V30','iQOO Neo 9'
+  ],
+
+  'Google Pixel':[
+    'Pixel 7','Pixel 8','Pixel 8 Pro','Pixel 9'
+  ]
+};
+
+function updateModels(){
+
+  const brand = document.getElementById('brand').value;
+  const modelSelect = document.getElementById('model');
+
+  modelSelect.innerHTML = '<option value="">Select Model</option>';
+
+  if(modelsByBrand[brand]){
+    modelsByBrand[brand].forEach(model=>{
+      const option = document.createElement('option');
+      option.value = model;
+      option.textContent = model;
+      modelSelect.appendChild(option);
+    });
+  }
+
+  updateSummary();
+}
+
+function selectProblem(type, element){
+  selectedType = type;
+
+  document.querySelectorAll('.problem-card').forEach(card=>{
+    card.classList.remove('active');
+  });
+
+  element.classList.add('active');
+
+  document.getElementById('hardwareSection').classList.add('hidden');
+  document.getElementById('softwareSection').classList.add('hidden');
+
+  if(type === 'hardware'){
+    document.getElementById('hardwareSection').classList.remove('hidden');
+  }
+
+  if(type === 'software'){
+    document.getElementById('softwareSection').classList.remove('hidden');
+  }
+
+  document.getElementById('sType').textContent =
+    type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+function selectIssue(element, issue){
+
+  document.querySelectorAll('.issue-option').forEach(opt=>{
+    opt.classList.remove('active');
+  });
+
+  element.classList.add('active');
+
+  selectedIssue = issue;
+
+  document.getElementById('sIssue').textContent = issue;
+
+  if(issue === 'Other'){
+    document.getElementById('otherSection').classList.remove('hidden');
+  }else{
+    document.getElementById('otherSection').classList.add('hidden');
+  }
+}
+
+function updateSummary(){
+  document.getElementById('sBrand').textContent = document.getElementById('brand').value || '—';
+
+  document.getElementById('sModel').textContent = document.getElementById('model').value || '—';
+
+  document.getElementById('sStorage').textContent = document.getElementById('storage').value || '—';
+
+  document.getElementById('sCustomer').textContent = document.getElementById('customerName').value || '—';
+
+  if(selectedIssue === 'Other'){
+    const custom = document.getElementById('customIssue').value;
+    document.getElementById('sIssue').textContent = custom || 'Other';
+  }
+}
+
+function showError(id){
+  const field = document.getElementById(id);
+  field.style.borderColor = '#dc2626';
+  field.style.background = '#fef2f2';
+}
+
+function clearError(id){
+  const field = document.getElementById(id);
+  field.style.borderColor = '';
+  field.style.background = '';
+}
+
+function confirmBooking(){
+
+  const requiredFields = [
+    'brand',
+    'model',
+    'storage',
+    'customerName',
+    'customerPhone',
+    'whatsapp'
+  ];
+
+  let valid = true;
+
+  requiredFields.forEach(id=>{
+    const field = document.getElementById(id);
+
+    if(!field.value.trim()){
+      showError(id);
+      valid = false;
+    }else{
+      clearError(id);
+    }
+  });
+  
+if(selectedIssue === 'Other'){
+  const custom = document.getElementById('customIssue').value.trim();
+
+  if(!custom){
+    showError('customIssue');
+    valid = false;
+  }else{
+    clearError('customIssue');
+  }
+}
+
+if(!valid){
+  return;
+}
+
+document.getElementById('successModal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('successModal').classList.remove('show');
+}
+
+// Reveal animation
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){
+      setTimeout(()=>{
+        entry.target.classList.add('in');
+      },i*80);
+
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:0.1});
+
+document.querySelectorAll('.reveal').forEach(el=>{
+  observer.observe(el);
+});
+
+document.getElementById('brand').addEventListener('change', updateModels);
+
+</script>
+
+</body>
+</html>

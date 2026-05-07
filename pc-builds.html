@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PC Builds — DeviceDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --white:#ffffff;--black:#0c0c0c;--off:#f7f6f3;
+  --amber:#f59e0b;--amber-light:#fef3c7;--amber-dark:#b45309;
+  --gray:#6b7280;--gray-light:#e5e4e0;--radius:14px;
+  --green:#16a34a;--green-light:#dcfce7;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--off);color:var(--black);font-family:'Instrument Sans',sans-serif;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:68px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-light);}
+.logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-0.5px;color:var(--black);text-decoration:none;}
+.logo em{font-style:normal;background:var(--amber);color:var(--black);padding:1px 6px;border-radius:4px;margin-left:1px;}
+.nav-links{display:flex;gap:34px;list-style:none;}
+.nav-links a{color:var(--gray);text-decoration:none;font-size:0.88rem;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--black);}
+.nav-links a.active{color:var(--black);font-weight:600;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-login{background:transparent;color:var(--black);padding:10px 20px;border-radius:8px;font-size:0.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--gray-light);transition:border-color .2s,background .2s;}
+.nav-login:hover{border-color:var(--black);background:var(--off);}
+.nav-cta{background:var(--black);color:var(--white);padding:10px 22px;border-radius:8px;font-size:0.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--black);transition:background .2s,color .2s;}
+.nav-cta:hover{background:var(--amber);color:var(--black);border-color:var(--amber);}
+
+/* ── PAGE HEADER ── */
+.page-header{padding:120px 64px 48px;background:var(--white);border-bottom:1px solid var(--gray-light);}
+.page-header-inner{max-width:1200px;margin:0 auto;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--gray);margin-bottom:18px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;transition:color .2s;}
+.breadcrumb a:hover{color:var(--black);}
+.breadcrumb span{color:var(--amber);}
+.page-header h1{font-family:'Clash Display',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:700;letter-spacing:-1.2px;margin-bottom:12px;}
+.page-header p{color:var(--gray);font-size:1rem;max-width:480px;line-height:1.65;}
+
+/* ── TABS ── */
+.tabs-wrap{background:var(--white);border-bottom:1px solid var(--gray-light);position:sticky;top:68px;z-index:100;}
+.tabs-inner{max-width:1200px;margin:0 auto;padding:0 64px;display:flex;gap:0;}
+.tab-btn{
+  padding:16px 28px;font-family:'Instrument Sans',sans-serif;font-size:0.92rem;font-weight:600;
+  background:none;border:none;cursor:pointer;color:var(--gray);
+  border-bottom:2.5px solid transparent;transition:color .2s,border-color .2s;
+  display:flex;align-items:center;gap:8px;
+}
+.tab-btn:hover{color:var(--black);}
+.tab-btn.active{color:var(--black);border-bottom-color:var(--amber);}
+.tab-badge{background:var(--amber-light);color:var(--amber-dark);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:100px;border:1px solid #fcd34d;}
+
+/* ── SECTION CONTAINER ── */
+.section-wrap{max-width:1200px;margin:0 auto;padding:56px 64px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── PREBUILT SECTION ── */
+.prebuilt-intro{margin-bottom:40px;}
+.prebuilt-intro h2{font-family:'Clash Display',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;}
+.prebuilt-intro p{color:var(--gray);font-size:0.92rem;}
+
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;}
+.filter-btn{padding:8px 18px;border-radius:100px;font-size:0.82rem;font-weight:600;border:1.5px solid var(--gray-light);background:var(--white);cursor:pointer;transition:all .2s;color:var(--black);}
+.filter-btn:hover{border-color:var(--black);}
+.filter-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+.prebuilt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+
+.pc-card{
+  background:var(--white);border:1.5px solid var(--gray-light);border-radius:18px;
+  overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;
+  display:flex;flex-direction:column;
+}
+.pc-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.1);border-color:var(--amber);}
+.pc-card-img{
+  height:180px;display:flex;align-items:center;justify-content:center;
+  font-size:4rem;position:relative;overflow:hidden;
+}
+.pc-card-img.starter{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);}
+.pc-card-img.pro{background:linear-gradient(135deg,#fef9ee,#fef3c7);}
+.pc-card-img.elite{background:linear-gradient(135deg,#0c0c0c,#1f1f2e);}
+.pc-card-img.workstation{background:linear-gradient(135deg,#f0fdf4,#dcfce7);}
+.pc-card-img.creator{background:linear-gradient(135deg,#fdf4ff,#f3e8ff);}
+.pc-card-img.server{background:linear-gradient(135deg,#fff7ed,#ffedd5);}
+
+.card-badge{
+  position:absolute;top:14px;right:14px;
+  font-size:0.72rem;font-weight:700;
+  padding:4px 10px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;
+}
+.badge-popular{background:var(--amber);color:var(--black);}
+.badge-new{background:var(--black);color:var(--white);}
+.badge-value{background:var(--green-light);color:var(--green);border:1px solid #86efac;}
+
+.pc-card-body{padding:24px;flex:1;display:flex;flex-direction:column;}
+.pc-card-body h3{font-family:'Clash Display',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+.pc-tier{font-size:0.78rem;font-weight:600;color:var(--amber-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.spec-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:20px;flex:1;}
+.spec-list li{display:flex;align-items:center;gap:8px;font-size:0.84rem;color:var(--gray);}
+.spec-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+.spec-list li strong{color:var(--black);}
+
+.pc-card-footer{border-top:1px solid var(--gray-light);padding-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.pc-price{font-family:'Clash Display',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:-0.5px;}
+.pc-price small{font-size:0.75rem;color:var(--gray);font-family:'Instrument Sans',sans-serif;font-weight:400;display:block;letter-spacing:0;}
+.btn-buy{
+  background:var(--black);color:var(--white);
+  padding:10px 20px;border-radius:9px;
+  font-size:0.85rem;font-weight:700;
+  border:none;cursor:pointer;white-space:nowrap;
+  transition:background .2s,transform .15s;
+}
+.btn-buy:hover{background:var(--amber);color:var(--black);transform:translateY(-1px);}
+
+/* ── CUSTOM BUILDER ── */
+.builder-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+
+.builder-left{}
+.builder-section{background:var(--white);border:1.5px solid var(--gray-light);border-radius:18px;padding:28px 32px;margin-bottom:16px;transition:border-color .2s;}
+.builder-section:focus-within{border-color:var(--amber);}
+.builder-section-head{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.builder-section-num{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--black);color:var(--white);
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:0.85rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.builder-section-title{font-family:'Clash Display',sans-serif;font-size:1rem;font-weight:700;}
+.builder-section-sub{font-size:0.8rem;color:var(--gray);margin-top:1px;}
+
+.component-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.component-group{display:flex;flex-direction:column;gap:6px;}
+.component-group label{font-size:0.8rem;font-weight:600;color:var(--black);display:flex;align-items:center;gap:6px;}
+.component-group label .req{color:var(--amber);font-size:0.7rem;}
+
+select.comp-select{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--gray-light);border-radius:10px;
+  font-family:'Instrument Sans',sans-serif;font-size:0.88rem;color:var(--black);
+  background:var(--white);outline:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:36px;cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;
+}
+select.comp-select:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.1);}
+select.comp-select:hover{border-color:#aaa;}
+
+/* OS / extras toggles */
+.toggle-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.toggle-option{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:10px;
+  border:1.5px solid var(--gray-light);background:var(--white);
+  cursor:pointer;transition:border-color .2s,background .2s;
+  font-size:0.85rem;font-weight:500;
+}
+.toggle-option input[type="radio"],.toggle-option input[type="checkbox"]{accent-color:var(--amber);}
+.toggle-option:has(input:checked){border-color:var(--amber);background:var(--amber-light);}
+
+/* ── SUMMARY PANEL ── */
+.summary-panel{
+  background:var(--white);border:1.5px solid var(--gray-light);
+  border-radius:18px;padding:28px;
+  position:sticky;top:136px;
+}
+.summary-panel h3{font-family:'Clash Display',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.summary-panel h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);}
+
+.summary-list{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:20px;border:1px solid var(--gray-light);border-radius:10px;overflow:hidden;}
+.summary-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 14px;border-bottom:1px solid var(--gray-light);
+  font-size:0.82rem;gap:8px;
+}
+.summary-item:last-child{border-bottom:none;}
+.summary-item .s-label{color:var(--gray);flex-shrink:0;}
+.summary-item .s-val{font-weight:600;text-align:right;color:var(--black);font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.summary-item .s-val.empty{color:var(--gray-light);font-style:italic;font-weight:400;}
+.summary-item .s-price{color:var(--amber-dark);font-weight:700;flex-shrink:0;}
+
+.summary-divider{height:1px;background:var(--gray-light);margin:16px 0;}
+.summary-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.summary-total-label{font-size:0.82rem;color:var(--gray);}
+.summary-total-price{font-family:'Clash Display',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:-1px;}
+.summary-tax{font-size:0.76rem;color:var(--gray);margin-bottom:20px;}
+
+.btn-order{
+  width:100%;background:var(--black);color:var(--white);
+  padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;
+  border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-order:hover{background:var(--amber);color:var(--black);transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.3);}
+.btn-order:disabled{background:var(--gray-light);color:var(--gray);cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-reset{width:100%;background:none;color:var(--gray);border:1.5px solid var(--gray-light);padding:11px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:10px;font-family:'Instrument Sans',sans-serif;transition:border-color .2s,color .2s;}
+.btn-reset:hover{border-color:var(--black);color:var(--black);}
+
+.summary-completion{margin-bottom:16px;}
+.completion-bar-wrap{background:var(--gray-light);border-radius:100px;height:5px;overflow:hidden;margin-top:6px;}
+.completion-bar{height:100%;background:var(--amber);border-radius:100px;transition:width .4s ease;}
+.completion-text{font-size:0.76rem;color:var(--gray);margin-top:5px;}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--white);border-radius:20px;
+  width:100%;max-width:480px;
+  padding:40px;position:relative;
+  transform:translateY(20px);transition:transform .3s;
+}
+.modal-overlay.show .modal{transform:none;}
+.modal-close{
+  position:absolute;top:18px;right:18px;
+  background:var(--off);border:none;cursor:pointer;
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;transition:background .2s;
+}
+.modal-close:hover{background:var(--gray-light);}
+.modal h2{font-family:'Clash Display',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:6px;}
+.modal-sub{color:var(--gray);font-size:0.88rem;margin-bottom:24px;}
+.modal-order-summary{background:var(--off);border-radius:12px;padding:18px;margin-bottom:24px;font-size:0.85rem;}
+.modal-order-row{display:flex;justify-content:space-between;padding:4px 0;color:var(--gray);}
+.modal-order-row strong{color:var(--black);}
+.modal-order-total{border-top:1px solid var(--gray-light);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;}
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.pay-btn{
+  padding:13px;border-radius:10px;border:1.5px solid var(--gray-light);
+  background:var(--white);cursor:pointer;font-size:0.85rem;font-weight:600;
+  transition:border-color .2s,background .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.pay-btn:hover{border-color:var(--black);background:var(--off);}
+.pay-btn.selected{border-color:var(--amber);background:var(--amber-light);}
+.btn-confirm{
+  width:100%;background:var(--black);color:var(--white);
+  padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;
+  border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;
+  transition:background .2s;
+}
+.btn-confirm:hover{background:var(--amber);color:var(--black);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .prebuilt-grid{grid-template-columns:repeat(2,1fr);}
+  .builder-layout{grid-template-columns:1fr;}
+  .summary-panel{position:static;}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .page-header,.section-wrap{padding-left:24px;padding-right:24px;}
+  .tabs-inner{padding:0 24px;overflow-x:auto;}
+  .prebuilt-grid{grid-template-columns:1fr;}
+  .component-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Device<em>Deck</em></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="pc-builds.html" class="active">PC Builds</a></li>
+    <li><a href="#" >Mobile</a></li>
+    <li><a href="#">IT Setup</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="login.html" class="nav-login">Log In</a>
+    <a href="index.html#contact" class="nav-cta">Get a Quote</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span>PC Builds</span>
+    </div>
+    <h1>PC Builds</h1>
+    <p>Choose a curated pre-built machine or design your perfect rig from scratch — every component, your choice.</p>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('prebuilt',this)">
+      🖥️ Pre-Built PCs
+      <span class="tab-badge">6 Models</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('custom',this)">
+      ⚙️ Custom PC Builder
+      <span class="tab-badge">New</span>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ PREBUILT PANEL ════════════════════════════════ -->
+<div class="section-wrap">
+<div id="panel-prebuilt" class="tab-panel active">
+
+  <div class="prebuilt-intro reveal">
+    <h2>Team-Curated Builds</h2>
+    <p>Hand-picked by our engineers for every use case. Ready to ship in 48 hours, fully tested and warranted.</p>
+  </div>
+
+  <div class="filter-bar reveal">
+    <button class="filter-btn active" onclick="filterCards('all',this)">All Builds</button>
+    <button class="filter-btn" onclick="filterCards('gaming',this)">🎮 Gaming</button>
+    <button class="filter-btn" onclick="filterCards('work',this)">💼 Work</button>
+    <button class="filter-btn" onclick="filterCards('creator',this)">🎨 Creator</button>
+    <button class="filter-btn" onclick="filterCards('budget',this)">💸 Budget</button>
+  </div>
+
+  <div class="prebuilt-grid" id="prebuiltGrid">
+
+    <!-- Card 1 -->
+    <div class="pc-card reveal" data-cat="budget gaming">
+      <div class="pc-card-img starter">
+        🖥️
+        <span class="card-badge badge-value">Best Value</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">Starter · Gaming</div>
+        <h3>DeckEntry G1</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> Intel Core i5-13400F</li>
+          <li><strong>GPU</strong> RX 6600 8GB</li>
+          <li><strong>RAM</strong> 16GB DDR4 3200MHz</li>
+          <li><strong>Storage</strong> 512GB NVMe SSD</li>
+          <li><strong>PSU</strong> 550W 80+ Bronze</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹42,999<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckEntry G1','₹42,999','Gaming / Entry Level')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="pc-card reveal" data-cat="gaming">
+      <div class="pc-card-img pro">
+        🖥️
+        <span class="card-badge badge-popular">Popular</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">Mid-Range · Gaming</div>
+        <h3>DeckPro G3</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> AMD Ryzen 5 7600X</li>
+          <li><strong>GPU</strong> RTX 4060 Ti 16GB</li>
+          <li><strong>RAM</strong> 32GB DDR5 5200MHz</li>
+          <li><strong>Storage</strong> 1TB NVMe Gen4 SSD</li>
+          <li><strong>PSU</strong> 650W 80+ Gold</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹79,999<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckPro G3','₹79,999','Gaming / Mid-Range')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="pc-card reveal" data-cat="gaming">
+      <div class="pc-card-img elite">
+        🖥️
+        <span class="card-badge badge-new">Elite</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">High-End · Gaming</div>
+        <h3>DeckElite G5</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> AMD Ryzen 9 7950X</li>
+          <li><strong>GPU</strong> RTX 4090 24GB</li>
+          <li><strong>RAM</strong> 64GB DDR5 6000MHz</li>
+          <li><strong>Storage</strong> 2TB NVMe Gen4 + 2TB HDD</li>
+          <li><strong>PSU</strong> 1000W 80+ Platinum</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹2,19,999<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckElite G5','₹2,19,999','Gaming / High-End')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="pc-card reveal" data-cat="work budget">
+      <div class="pc-card-img workstation">
+        🖥️
+        <span class="card-badge badge-value">Office Pick</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">Essential · Work</div>
+        <h3>DeckOffice W1</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> Intel Core i3-13100</li>
+          <li><strong>GPU</strong> Intel UHD 730 (Integrated)</li>
+          <li><strong>RAM</strong> 8GB DDR4 3200MHz</li>
+          <li><strong>Storage</strong> 256GB SSD + 1TB HDD</li>
+          <li><strong>PSU</strong> 400W 80+ Bronze</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹28,499<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckOffice W1','₹28,499','Work / Essential')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="pc-card reveal" data-cat="creator work">
+      <div class="pc-card-img creator">
+        🖥️
+        <span class="card-badge badge-new">New</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">Pro · Creator / Video</div>
+        <h3>DeckCreate C4</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> Intel Core i9-13900K</li>
+          <li><strong>GPU</strong> RTX 4070 Ti 12GB</li>
+          <li><strong>RAM</strong> 64GB DDR5 5600MHz</li>
+          <li><strong>Storage</strong> 2TB NVMe + 4TB HDD</li>
+          <li><strong>PSU</strong> 850W 80+ Gold</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹1,54,999<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckCreate C4','₹1,54,999','Creator / Pro')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="pc-card reveal" data-cat="work creator">
+      <div class="pc-card-img server">
+        🖥️
+        <span class="card-badge badge-popular">Popular</span>
+      </div>
+      <div class="pc-card-body">
+        <div class="pc-tier">Workstation · Professional</div>
+        <h3>DeckStation W5</h3>
+        <ul class="spec-list">
+          <li><strong>CPU</strong> AMD Threadripper 7960X</li>
+          <li><strong>GPU</strong> RTX 4080 16GB</li>
+          <li><strong>RAM</strong> 128GB DDR5 ECC</li>
+          <li><strong>Storage</strong> 4TB NVMe RAID + 8TB HDD</li>
+          <li><strong>PSU</strong> 1200W 80+ Titanium</li>
+        </ul>
+        <div class="pc-card-footer">
+          <div class="pc-price">₹3,89,999<small>+ 18% GST</small></div>
+          <button class="btn-buy" onclick="openBuyModal('DeckStation W5','₹3,89,999','Workstation / Pro')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ CUSTOM BUILDER PANEL ════════════════════════════════ -->
+<div id="panel-custom" class="tab-panel">
+<div class="builder-layout">
+
+  <!-- LEFT: Components -->
+  <div class="builder-left">
+
+    <!-- PROCESSOR -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">01</div>
+        <div><div class="builder-section-title">Processor (CPU)</div><div class="builder-section-sub">The brain of your build</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Brand <span class="req">★</span></label>
+          <select class="comp-select" id="cpu-brand" onchange="updateCPUModels()">
+            <option value="">Select brand</option>
+            <option value="intel">Intel</option>
+            <option value="amd">AMD</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Model <span class="req">★</span></label>
+          <select class="comp-select" id="cpu-model" onchange="updatePrice()">
+            <option value="">Select brand first</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTHERBOARD -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">02</div>
+        <div><div class="builder-section-title">Motherboard</div><div class="builder-section-sub">Foundation of your system</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Chipset <span class="req">★</span></label>
+          <select class="comp-select" id="mobo" onchange="updatePrice()">
+            <option value="">Select motherboard</option>
+            <option value="b650" data-price="9500">B650 (AMD AM5) — ₹9,500</option>
+            <option value="x670e" data-price="18000">X670E (AMD AM5) — ₹18,000</option>
+            <option value="b760" data-price="10500">B760 (Intel LGA1700) — ₹10,500</option>
+            <option value="z790" data-price="22000">Z790 (Intel LGA1700) — ₹22,000</option>
+            <option value="trx50" data-price="55000">TRX50 (Threadripper) — ₹55,000</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Form Factor</label>
+          <select class="comp-select" id="mobo-form">
+            <option value="atx">ATX</option>
+            <option value="matx">Micro-ATX</option>
+            <option value="itx">Mini-ITX</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- GPU -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">03</div>
+        <div><div class="builder-section-title">Graphics Card (GPU)</div><div class="builder-section-sub">For gaming, rendering & AI</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Brand</label>
+          <select class="comp-select" id="gpu-brand" onchange="updateGPUModels()">
+            <option value="">Select brand</option>
+            <option value="nvidia">NVIDIA</option>
+            <option value="amd-gpu">AMD Radeon</option>
+            <option value="none">No GPU (Integrated)</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Model</label>
+          <select class="comp-select" id="gpu-model" onchange="updatePrice()">
+            <option value="">Select brand first</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAM -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">04</div>
+        <div><div class="builder-section-title">Memory (RAM)</div><div class="builder-section-sub">Speed and capacity</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Capacity <span class="req">★</span></label>
+          <select class="comp-select" id="ram" onchange="updatePrice()">
+            <option value="">Select RAM</option>
+            <option value="8ddr4" data-price="2200">8GB DDR4 3200MHz — ₹2,200</option>
+            <option value="16ddr4" data-price="3800">16GB DDR4 3200MHz — ₹3,800</option>
+            <option value="32ddr4" data-price="7200">32GB DDR4 3600MHz — ₹7,200</option>
+            <option value="16ddr5" data-price="5500">16GB DDR5 5200MHz — ₹5,500</option>
+            <option value="32ddr5" data-price="9500">32GB DDR5 5600MHz — ₹9,500</option>
+            <option value="64ddr5" data-price="18000">64GB DDR5 6000MHz — ₹18,000</option>
+            <option value="128ddr5" data-price="38000">128GB DDR5 ECC — ₹38,000</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Sticks</label>
+          <select class="comp-select" id="ram-sticks">
+            <option value="2x">2x (Dual Channel)</option>
+            <option value="4x">4x (Quad Channel)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORAGE -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">05</div>
+        <div><div class="builder-section-title">Storage</div><div class="builder-section-sub">Primary + secondary options</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Primary SSD <span class="req">★</span></label>
+          <select class="comp-select" id="ssd" onchange="updatePrice()">
+            <option value="">Select SSD</option>
+            <option value="256ssd" data-price="2200">256GB NVMe Gen3 — ₹2,200</option>
+            <option value="500ssd" data-price="3500">500GB NVMe Gen3 — ₹3,500</option>
+            <option value="1ssd" data-price="5500">1TB NVMe Gen4 — ₹5,500</option>
+            <option value="2ssd" data-price="9800">2TB NVMe Gen4 — ₹9,800</option>
+            <option value="4ssd" data-price="19500">4TB NVMe Gen4 — ₹19,500</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Secondary HDD</label>
+          <select class="comp-select" id="hdd" onchange="updatePrice()">
+            <option value="none" data-price="0">None</option>
+            <option value="1hdd" data-price="2800">1TB HDD 7200RPM — ₹2,800</option>
+            <option value="2hdd" data-price="4200">2TB HDD 7200RPM — ₹4,200</option>
+            <option value="4hdd" data-price="7500">4TB HDD 7200RPM — ₹7,500</option>
+            <option value="8hdd" data-price="14000">8TB HDD NAS Grade — ₹14,000</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CABINET + COOLING -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">06</div>
+        <div><div class="builder-section-title">Cabinet & Cooling</div><div class="builder-section-sub">Airflow and aesthetics</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Cabinet <span class="req">★</span></label>
+          <select class="comp-select" id="cabinet" onchange="updatePrice()">
+            <option value="">Select cabinet</option>
+            <option value="budget-case" data-price="2800">Ant Esports ICE-200TG — ₹2,800</option>
+            <option value="mid-case" data-price="6500">Lian Li LANCOOL 216 — ₹6,500</option>
+            <option value="premium-case" data-price="12000">Fractal Design Torrent — ₹12,000</option>
+            <option value="itx-case" data-price="9000">Cooler Master NR200P — ₹9,000</option>
+            <option value="full-tower" data-price="18000">Corsair 7000D Airflow — ₹18,000</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>CPU Cooler <span class="req">★</span></label>
+          <select class="comp-select" id="cooler" onchange="updatePrice()">
+            <option value="">Select cooler</option>
+            <option value="stock" data-price="0">Stock Cooler (Included)</option>
+            <option value="aircool-budget" data-price="1800">DeepCool AK400 Air — ₹1,800</option>
+            <option value="aircool-pro" data-price="4500">Noctua NH-D15 Air — ₹4,500</option>
+            <option value="aio-240" data-price="6500">240mm AIO Liquid — ₹6,500</option>
+            <option value="aio-360" data-price="11000">360mm AIO Liquid — ₹11,000</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSU -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">07</div>
+        <div><div class="builder-section-title">Power Supply (PSU)</div><div class="builder-section-sub">Stable power for your rig</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Wattage & Rating <span class="req">★</span></label>
+          <select class="comp-select" id="psu" onchange="updatePrice()">
+            <option value="">Select PSU</option>
+            <option value="450b" data-price="3500">450W 80+ Bronze — ₹3,500</option>
+            <option value="550b" data-price="4200">550W 80+ Bronze — ₹4,200</option>
+            <option value="650g" data-price="6500">650W 80+ Gold — ₹6,500</option>
+            <option value="750g" data-price="7800">750W 80+ Gold — ₹7,800</option>
+            <option value="850g" data-price="9500">850W 80+ Gold — ₹9,500</option>
+            <option value="1000p" data-price="16000">1000W 80+ Platinum — ₹16,000</option>
+            <option value="1200t" data-price="24000">1200W 80+ Titanium — ₹24,000</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Cable Type</label>
+          <select class="comp-select" id="psu-cable">
+            <option value="semi">Semi-Modular</option>
+            <option value="full">Fully Modular (+₹500)</option>
+            <option value="non">Non-Modular</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONITOR -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">08</div>
+        <div><div class="builder-section-title">Monitor <span style="color:var(--gray);font-weight:400;font-size:0.8rem;">(Optional)</span></div><div class="builder-section-sub">Add a display to your order</div></div>
+      </div>
+      <div class="component-row">
+        <div class="component-group">
+          <label>Monitor</label>
+          <select class="comp-select" id="monitor" onchange="updatePrice()">
+            <option value="none" data-price="0">No Monitor</option>
+            <option value="fhd-144" data-price="9500">24" FHD 144Hz IPS — ₹9,500</option>
+            <option value="fhd-165" data-price="12000">27" FHD 165Hz VA — ₹12,000</option>
+            <option value="qhd-165" data-price="22000">27" QHD 165Hz IPS — ₹22,000</option>
+            <option value="4k-144" data-price="38000">32" 4K 144Hz IPS — ₹38,000</option>
+            <option value="ultra" data-price="55000">34" Ultrawide 144Hz — ₹55,000</option>
+          </select>
+        </div>
+        <div class="component-group">
+          <label>Keyboard & Mouse</label>
+          <select class="comp-select" id="periph" onchange="updatePrice()">
+            <option value="none" data-price="0">No Peripherals</option>
+            <option value="basic-km" data-price="1200">Basic Combo — ₹1,200</option>
+            <option value="gaming-km" data-price="4500">Gaming Combo (Mech + RGB) — ₹4,500</option>
+            <option value="pro-km" data-price="9500">Pro Combo (Keychron + G Pro) — ₹9,500</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- OS -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">09</div>
+        <div><div class="builder-section-title">Operating System</div><div class="builder-section-sub">Pre-installed & activated</div></div>
+      </div>
+      <div class="toggle-grid">
+        <label class="toggle-option">
+          <input type="radio" name="os" value="none" data-price="0" onchange="updatePrice()" checked/>
+          No OS
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="os" value="win11home" data-price="8999" onchange="updatePrice()"/>
+          Windows 11 Home — ₹8,999
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="os" value="win11pro" data-price="13999" onchange="updatePrice()"/>
+          Windows 11 Pro — ₹13,999
+        </label>
+        <label class="toggle-option">
+          <input type="radio" name="os" value="ubuntu" data-price="0" onchange="updatePrice()"/>
+          Ubuntu LTS (Free)
+        </label>
+      </div>
+    </div>
+
+    <!-- EXTRAS -->
+    <div class="builder-section reveal">
+      <div class="builder-section-head">
+        <div class="builder-section-num">10</div>
+        <div><div class="builder-section-title">Extras & Add-ons</div><div class="builder-section-sub">Finishing touches</div></div>
+      </div>
+      <div class="toggle-grid">
+        <label class="toggle-option">
+          <input type="checkbox" value="wifi" data-price="1800" onchange="updatePrice()"/>
+          Wi-Fi 6E Card — ₹1,800
+        </label>
+        <label class="toggle-option">
+          <input type="checkbox" value="rgb" data-price="1200" onchange="updatePrice()"/>
+          RGB LED Strips — ₹1,200
+        </label>
+        <label class="toggle-option">
+          <input type="checkbox" value="cable-mgmt" data-price="800" onchange="updatePrice()"/>
+          Premium Cable Management — ₹800
+        </label>
+        <label class="toggle-option">
+          <input type="checkbox" value="thermal" data-price="600" onchange="updatePrice()"/>
+          Premium Thermal Paste — ₹600
+        </label>
+        <label class="toggle-option">
+          <input type="checkbox" value="warranty-ext" data-price="2999" onchange="updatePrice()"/>
+          Extended Warranty (3yr) — ₹2,999
+        </label>
+        <label class="toggle-option">
+          <input type="checkbox" value="stress-test" data-price="499" onchange="updatePrice()"/>
+          24hr Stress Test Report — ₹499
+        </label>
+      </div>
+    </div>
+
+  </div><!-- end builder-left -->
+
+  <!-- RIGHT: Summary Panel -->
+  <div class="summary-panel reveal">
+    <h3><span class="dot"></span> Build Summary</h3>
+
+    <div class="summary-completion">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.8rem;font-weight:600;">Completion</span>
+        <span style="font-size:0.8rem;color:var(--gray);" id="completionPct">0%</span>
+      </div>
+      <div class="completion-bar-wrap"><div class="completion-bar" id="completionBar" style="width:0%"></div></div>
+      <div class="completion-text" id="completionText">Select required components to continue</div>
+    </div>
+
+    <ul class="summary-list" id="summaryList">
+      <li class="summary-item"><span class="s-label">CPU</span><span class="s-val empty" id="s-cpu">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">Motherboard</span><span class="s-val empty" id="s-mobo">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">GPU</span><span class="s-val empty" id="s-gpu">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">RAM</span><span class="s-val empty" id="s-ram">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">SSD</span><span class="s-val empty" id="s-ssd">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">HDD</span><span class="s-val" id="s-hdd">None</span></li>
+      <li class="summary-item"><span class="s-label">Cabinet</span><span class="s-val empty" id="s-cabinet">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">Cooler</span><span class="s-val empty" id="s-cooler">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">PSU</span><span class="s-val empty" id="s-psu">Not selected</span></li>
+      <li class="summary-item"><span class="s-label">Monitor</span><span class="s-val" id="s-monitor">None</span></li>
+      <li class="summary-item"><span class="s-label">OS</span><span class="s-val" id="s-os">No OS</span></li>
+    </ul>
+
+    <div class="summary-divider"></div>
+    <div class="summary-total-row">
+      <span class="summary-total-label">Estimated Total</span>
+      <span class="summary-total-price" id="totalPrice">₹0</span>
+    </div>
+    <div class="summary-tax">+ 18% GST applicable · Assembly & testing included</div>
+
+    <button class="btn-order" id="orderBtn" disabled onclick="openCustomModal()">
+      Proceed to Order →
+    </button>
+    <button class="btn-reset" onclick="resetBuilder()">Reset Build</button>
+  </div>
+
+</div>
+</div><!-- end section-wrap -->
+</div>
+
+<!-- ── BUY MODAL ── -->
+<div class="modal-overlay" id="buyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
+    <h2>Complete Purchase</h2>
+    <p class="modal-sub">You're ordering a pre-built DeviceDeck machine.</p>
+    <div class="modal-order-summary">
+      <div class="modal-order-row"><span>Model</span><strong id="modal-model">—</strong></div>
+      <div class="modal-order-row"><span>Category</span><strong id="modal-cat">—</strong></div>
+      <div class="modal-order-row"><span>Assembly</span><strong>Included</strong></div>
+      <div class="modal-order-row"><span>Warranty</span><strong>1 Year</strong></div>
+      <div class="modal-order-total"><span>Total</span><span id="modal-price">—</span></div>
+    </div>
+    <p style="font-size:0.82rem;font-weight:600;margin-bottom:12px;color:var(--black);">Payment Method</p>
+    <div class="payment-methods">
+      <button class="pay-btn selected" id="pay-upi" onclick="selectPay('upi')">💳 UPI / QR</button>
+      <button class="pay-btn" id="pay-card" onclick="selectPay('card')">🏦 Card</button>
+      <button class="pay-btn" id="pay-emi" onclick="selectPay('emi')">📅 EMI</button>
+      <button class="pay-btn" id="pay-cod" onclick="selectPay('cod')">💵 Pay on Pickup</button>
+    </div>
+    <button class="btn-confirm" onclick="confirmOrder()">Confirm Order →</button>
+  </div>
+</div>
+
+<!-- ── CUSTOM ORDER MODAL ── -->
+<div class="modal-overlay" id="customModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('customModal')">✕</button>
+    <h2>Review Custom Build</h2>
+    <p class="modal-sub">Your selected configuration summary.</p>
+    <div class="modal-order-summary" id="customOrderSummary"></div>
+    <p style="font-size:0.82rem;font-weight:600;margin-bottom:12px;color:var(--black);">Payment Method</p>
+    <div class="payment-methods">
+      <button class="pay-btn selected" id="cpay-upi" onclick="selectCustomPay('upi')">💳 UPI / QR</button>
+      <button class="pay-btn" id="cpay-card" onclick="selectCustomPay('card')">🏦 Card</button>
+      <button class="pay-btn" id="cpay-emi" onclick="selectCustomPay('emi')">📅 EMI</button>
+      <button class="pay-btn" id="cpay-cod" onclick="selectCustomPay('cod')">💵 Pay on Pickup</button>
+    </div>
+    <button class="btn-confirm" onclick="confirmOrder()">Confirm Order →</button>
+  </div>
+</div>
+
+<script>
+// ── Component data ──────────────────────────────────────────────
+const cpuData = {
+  intel: [
+    {label:'Core i3-13100 — ₹9,500', price:9500},
+    {label:'Core i5-13400F — ₹14,500', price:14500},
+    {label:'Core i5-13600K — ₹22,000', price:22000},
+    {label:'Core i7-13700K — ₹35,000', price:35000},
+    {label:'Core i9-13900K — ₹52,000', price:52000},
+    {label:'Core i9-14900KS — ₹65,000', price:65000},
+  ],
+  amd: [
+    {label:'Ryzen 5 5600X — ₹12,000', price:12000},
+    {label:'Ryzen 5 7600X — ₹18,500', price:18500},
+    {label:'Ryzen 7 7700X — ₹28,000', price:28000},
+    {label:'Ryzen 9 7900X — ₹42,000', price:42000},
+    {label:'Ryzen 9 7950X — ₹65,000', price:65000},
+    {label:'Threadripper 7960X — ₹1,85,000', price:185000},
+  ]
+};
+const gpuData = {
+  nvidia: [
+    {label:'RTX 3060 12GB — ₹28,000', price:28000},
+    {label:'RTX 4060 8GB — ₹32,000', price:32000},
+    {label:'RTX 4060 Ti 16GB — ₹45,000', price:45000},
+    {label:'RTX 4070 12GB — ₹58,000', price:58000},
+    {label:'RTX 4070 Ti 12GB — ₹78,000', price:78000},
+    {label:'RTX 4080 16GB — ₹1,10,000', price:110000},
+    {label:'RTX 4090 24GB — ₹1,75,000', price:175000},
+  ],
+  'amd-gpu': [
+    {label:'RX 6600 8GB — ₹22,000', price:22000},
+    {label:'RX 6700 XT 12GB — ₹32,000', price:32000},
+    {label:'RX 7600 8GB — ₹28,000', price:28000},
+    {label:'RX 7700 XT 12GB — ₹38,000', price:38000},
+    {label:'RX 7900 XTX 24GB — ₹95,000', price:95000},
+  ],
+  none: [{label:'Integrated Graphics (No GPU)', price:0}]
+};
+
+function updateCPUModels(){
+  const brand = document.getElementById('cpu-brand').value;
+  const modelSel = document.getElementById('cpu-model');
+  modelSel.innerHTML = '<option value="">Select model</option>';
+  if(brand && cpuData[brand]){
+    cpuData[brand].forEach(c=>{
+      const o = document.createElement('option');
+      o.value = c.price; o.textContent = c.label; o.dataset.price = c.price;
+      modelSel.appendChild(o);
+    });
+  }
+  updatePrice();
+}
+function updateGPUModels(){
+  const brand = document.getElementById('gpu-brand').value;
+  const modelSel = document.getElementById('gpu-model');
+  modelSel.innerHTML = '<option value="">Select model</option>';
+  if(brand && gpuData[brand]){
+    gpuData[brand].forEach(g=>{
+      const o = document.createElement('option');
+      o.value = g.price; o.textContent = g.label; o.dataset.price = g.price;
+      modelSel.appendChild(o);
+    });
+    if(brand==='none'){
+      modelSel.value = gpuData['none'][0].price;
+    }
+  }
+  updatePrice();
+}
+
+function getSelectPrice(id){
+  const el = document.getElementById(id);
+  if(!el || !el.value) return 0;
+  const opt = el.options[el.selectedIndex];
+  return parseInt(opt?.dataset?.price || el.value) || 0;
+}
+function getSelectText(id){
+  const el = document.getElementById(id);
+  if(!el || !el.value) return null;
+  const opt = el.options[el.selectedIndex];
+  const t = opt?.text || '';
+  return t.split(' — ')[0].trim();
+}
+
+const REQUIRED = ['cpu-model','mobo','ram','ssd','cabinet','cooler','psu'];
+
+function updatePrice(){
+  let total = 0;
+  // CPU
+  total += getSelectPrice('cpu-model');
+  // Mobo
+  total += getSelectPrice('mobo');
+  // GPU
+  const gpuVal = document.getElementById('gpu-model')?.value;
+  if(gpuVal) total += parseInt(gpuVal)||0;
+  // RAM
+  total += getSelectPrice('ram');
+  // Storage
+  total += getSelectPrice('ssd');
+  total += getSelectPrice('hdd');
+  // Case + cooler
+  total += getSelectPrice('cabinet');
+  total += getSelectPrice('cooler');
+  // PSU
+  total += getSelectPrice('psu');
+  // PSU cable mod
+  const psuCable = document.getElementById('psu-cable')?.value;
+  if(psuCable==='full') total += 500;
+  // Monitor
+  total += getSelectPrice('monitor');
+  // Peripherals
+  total += getSelectPrice('periph');
+  // OS
+  const osEl = document.querySelector('input[name="os"]:checked');
+  if(osEl) total += parseInt(osEl.dataset.price)||0;
+  // Extras
+  document.querySelectorAll('.toggle-option input[type="checkbox"]:checked').forEach(cb=>{
+    total += parseInt(cb.dataset.price)||0;
+  });
+
+  document.getElementById('totalPrice').textContent = total > 0 ? '₹'+total.toLocaleString('en-IN') : '₹0';
+
+  // Summary labels
+  setSummary('s-cpu', getSelectText('cpu-model'));
+  setSummary('s-mobo', getSelectText('mobo'));
+  const gpuText = document.getElementById('gpu-model')?.options[document.getElementById('gpu-model')?.selectedIndex]?.text;
+  setSummary('s-gpu', gpuText ? gpuText.split(' — ')[0] : null);
+  setSummary('s-ram', getSelectText('ram'));
+  setSummary('s-ssd', getSelectText('ssd'));
+  const hddText = getSelectText('hdd');
+  setSummary('s-hdd', hddText && hddText!=='None' ? hddText : null, 'None');
+  setSummary('s-cabinet', getSelectText('cabinet'));
+  setSummary('s-cooler', getSelectText('cooler'));
+  setSummary('s-psu', getSelectText('psu'));
+  const monText = getSelectText('monitor');
+  setSummary('s-monitor', monText && monText!=='No Monitor' ? monText : null, 'None');
+  const osText = osEl ? osEl.closest('label').textContent.split(' — ')[0].trim() : 'No OS';
+  document.getElementById('s-os').textContent = osText;
+  document.getElementById('s-os').className = 's-val';
+
+  // Completion
+  let filled = 0;
+  REQUIRED.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && el.value) filled++;
+  });
+  const pct = Math.round((filled/REQUIRED.length)*100);
+  document.getElementById('completionBar').style.width = pct+'%';
+  document.getElementById('completionPct').textContent = pct+'%';
+  document.getElementById('completionText').textContent =
+    pct===100 ? '✅ All required components selected!' :
+    pct>50 ? 'Almost there — a few more components needed' :
+    'Select required ★ components to continue';
+
+  const orderBtn = document.getElementById('orderBtn');
+  orderBtn.disabled = pct < 100;
+}
+
+function setSummary(id, text, fallback='Not selected'){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(text){el.textContent=text;el.className='s-val';}
+  else{el.textContent=fallback;el.className='s-val'+(fallback==='Not selected'?' empty':'');}
+}
+
+// Tabs
+function switchTab(tab, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Filter prebuilt
+function filterCards(cat, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#prebuiltGrid .pc-card').forEach(card=>{
+    if(cat==='all'||card.dataset.cat.includes(cat)){card.style.display='';}
+    else{card.style.display='none';}
+  });
+}
+
+// Modal
+let selectedPay = 'upi';
+function openBuyModal(name, price, cat){
+  document.getElementById('modal-model').textContent = name;
+  document.getElementById('modal-price').textContent = price;
+  document.getElementById('modal-cat').textContent = cat;
+  document.getElementById('buyModal').classList.add('show');
+}
+function openCustomModal(){
+  const cpu = getSelectText('cpu-model') || '—';
+  const gpu = document.getElementById('gpu-model')?.options[document.getElementById('gpu-model')?.selectedIndex]?.text?.split(' — ')[0] || 'Integrated';
+  const ram = getSelectText('ram') || '—';
+  const ssd = getSelectText('ssd') || '—';
+  const total = document.getElementById('totalPrice').textContent;
+  document.getElementById('customOrderSummary').innerHTML = `
+    <div class="modal-order-row"><span>CPU</span><strong>${cpu}</strong></div>
+    <div class="modal-order-row"><span>GPU</span><strong>${gpu}</strong></div>
+    <div class="modal-order-row"><span>RAM</span><strong>${ram}</strong></div>
+    <div class="modal-order-row"><span>SSD</span><strong>${ssd}</strong></div>
+    <div class="modal-order-row"><span>Assembly</span><strong>Included</strong></div>
+    <div class="modal-order-total"><span>Total</span><span>${total}</span></div>`;
+  document.getElementById('customModal').classList.add('show');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function selectPay(method){
+  selectedPay = method;
+  ['upi','card','emi','cod'].forEach(m=>{
+    document.getElementById('pay-'+m)?.classList.toggle('selected', m===method);
+  });
+}
+function selectCustomPay(method){
+  ['upi','card','emi','cod'].forEach(m=>{
+    document.getElementById('cpay-'+m)?.classList.toggle('selected', m===method);
+  });
+}
+function confirmOrder(){
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show'));
+  setTimeout(()=>alert('🎉 Order placed! Our team will contact you within 2 hours to confirm your build and share payment details.'),200);
+}
+
+// Reset
+function resetBuilder(){
+  if(!confirm('Reset all selections?')) return;
+  ['cpu-brand','cpu-model','mobo','mobo-form','gpu-brand','gpu-model','ram','ram-sticks','ssd','hdd','cabinet','cooler','psu','psu-cable','monitor','periph'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value='';
+  });
+  document.querySelector('input[name="os"][value="none"]').checked=true;
+  document.querySelectorAll('.toggle-option input[type="checkbox"]').forEach(cb=>cb.checked=false);
+  const modelSel = document.getElementById('cpu-model');
+  modelSel.innerHTML='<option value="">Select brand first</option>';
+  const gpuModel = document.getElementById('gpu-model');
+  gpuModel.innerHTML='<option value="">Select brand first</option>';
+  updatePrice();
+}
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*60);obs.unobserve(e.target);}
+  });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',(e)=>{if(e.target===overlay) overlay.classList.remove('show');});
+});
+</script>
+</body>
+</html>
