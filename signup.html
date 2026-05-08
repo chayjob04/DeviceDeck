@@ -908,7 +908,13 @@ Redirecting to login page...
 
 </div>
 
-<script>
+<script type="module">
+    import {
+  auth,
+  provider,
+  createUserWithEmailAndPassword,
+  signInWithPopup
+} from "./firebase.js";
 
 function showError(inputId,errorId){
 
@@ -1004,31 +1010,66 @@ if(!valid){
 return;
 }
 
-localStorage.setItem('userName',name);
+createUserWithEmailAndPassword(auth, email, password)
 
-localStorage.setItem('userEmail',email);
+.then((userCredential) => {
 
-localStorage.setItem('userPhone',phone);
+  localStorage.setItem("loggedIn", "true");
 
-localStorage.setItem('userPassword',password);
+  localStorage.setItem("userName", name);
 
-document.getElementById('signupForm').style.display='none';
+  localStorage.setItem("userEmail", email);
 
-document.getElementById('successBox').classList.add('show');
+  localStorage.setItem("userPhone", phone);
 
-setTimeout(()=>{
+  document.getElementById('signupForm').style.display='none';
 
-window.location.href='login.html';
+  document.getElementById('successBox').classList.add('show');
 
-},2000);
+  setTimeout(()=>{
+
+    window.location.href='index.html';
+
+  },2000);
+
+})
+
+.catch((error) => {
+
+  alert(error.message);
+
+});
 
 }
 
 function handleGoogleSignup(){
 
-alert('Google Sign Up will be integrated here via Firebase.');
+  signInWithPopup(auth, provider)
 
-}
+  .then((result) => {
+
+    localStorage.setItem("loggedIn", "true");
+
+    localStorage.setItem(
+      "userName",
+      result.user.displayName || "User"
+    );
+
+    localStorage.setItem(
+      "userEmail",
+      result.user.email
+    );
+
+    window.location.href = "index.html";
+
+  })
+
+  .catch((error) => {
+
+    alert(error.message);
+
+  });
+
 
 </script>
 
