@@ -932,7 +932,7 @@ document.getElementById(errorId).classList.remove('show');
 
 }
 
-function createAccount(){
+window.createAccount = function(){
 
 const name = document.getElementById('name').value.trim();
 
@@ -1041,8 +1041,7 @@ createUserWithEmailAndPassword(auth, email, password)
 });
 
 }
-
-function handleGoogleSignup(){
+window.handleGoogleSignup = function(){
 
   signInWithPopup(auth, provider)
 
@@ -1214,6 +1213,7 @@ function handleGoogleSignup(){
   ddInitProfile();
   document.addEventListener('DOMContentLoaded', ddInitProfile);
 })();
+}
 </script>
 
 </body>
