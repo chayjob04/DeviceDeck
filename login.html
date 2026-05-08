@@ -686,6 +686,8 @@ signInWithEmailAndPassword(auth, email, pwd)
   loginBtn.disabled = false;
 
 });
+}
+
 window.handleGoogle = function() {
 
   signInWithPopup(auth, provider)
@@ -870,7 +872,6 @@ document.addEventListener('keydown', (e) => {
   ddInitProfile();
   document.addEventListener('DOMContentLoaded', ddInitProfile);
 })();
-}
 </script>
 
 </body>
