@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Sign Up — DeviceDeck</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+
+*,*::before,*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --white:#ffffff;
+  --black:#0c0c0c;
+  --off:#f7f6f3;
+
+  --amber:#f59e0b;
+  --amber-light:#fef3c7;
+  --amber-dark:#b45309;
+
+  --gray:#6b7280;
+  --gray-light:#e5e4e0;
+
+  --green:#16a34a;
+  --red:#ef4444;
+
+  --radius:14px;
+}
+
+html,body{
+  height:100%;
+}
+
+body{
+  background:var(--off);
+  color:var(--black);
+  font-family:'Instrument Sans',sans-serif;
+  overflow-x:hidden;
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 64px;
+  height:68px;
+
+  background:rgba(255,255,255,0.9);
+
+  backdrop-filter:blur(20px);
+
+  border-bottom:1px solid var(--gray-light);
+}
+
+.logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:1.35rem;
+  font-weight:700;
+
+  color:var(--black);
+
+  text-decoration:none;
+}
+
+.logo em{
+  font-style:normal;
+
+  background:var(--amber);
+
+  padding:1px 6px;
+
+  border-radius:4px;
+}
+
+.nav-back{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  color:var(--gray);
+
+  text-decoration:none;
+
+  font-size:.88rem;
+  font-weight:500;
+}
+
+.nav-back:hover{
+  color:var(--black);
+}
+
+/* LAYOUT */
+
+.page-body{
+  min-height:calc(100vh - 68px);
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+
+/* LEFT PANEL */
+
+.left-panel{
+  background:var(--black);
+
+  padding:64px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+
+  position:relative;
+
+  overflow:hidden;
+}
+
+.left-panel::before{
+  content:'';
+
+  position:absolute;
+
+  width:340px;
+  height:340px;
+
+  border-radius:50%;
+
+  background:radial-gradient(circle,rgba(245,158,11,.18),transparent 70%);
+
+  bottom:-120px;
+  left:-120px;
+}
+
+.left-panel::after{
+  content:'';
+
+  position:absolute;
+
+  width:240px;
+  height:240px;
+
+  border-radius:50%;
+
+  background:radial-gradient(circle,rgba(245,158,11,.12),transparent 70%);
+
+  top:-60px;
+  right:-60px;
+}
+
+.left-content{
+  position:relative;
+  z-index:2;
+}
+
+.left-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+
+  background:rgba(245,158,11,.12);
+
+  border:1px solid rgba(245,158,11,.25);
+
+  color:var(--amber);
+
+  border-radius:100px;
+
+  padding:8px 16px;
+
+  font-size:.78rem;
+  font-weight:700;
+
+  margin-bottom:28px;
+}
+
+.left-tag span{
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:var(--amber);
+}
+
+.left-panel h1{
+  font-family:'Clash Display',sans-serif;
+
+  font-size:clamp(2rem,4vw,3.4rem);
+
+  line-height:1.08;
+
+  letter-spacing:-1.5px;
+
+  color:var(--white);
+
+  margin-bottom:18px;
+}
+
+.left-panel h1 em{
+  font-style:normal;
+  color:var(--amber);
+}
+
+.left-panel p{
+  color:#8a8a8a;
+
+  font-size:.98rem;
+
+  line-height:1.8;
+
+  max-width:420px;
+}
+
+.features{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+
+  position:relative;
+  z-index:2;
+}
+
+.feature{
+  display:flex;
+  gap:14px;
+
+  padding:18px;
+
+  border-radius:14px;
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.feature-icon{
+  width:42px;
+  height:42px;
+
+  border-radius:10px;
+
+  background:rgba(245,158,11,.12);
+
+  border:1px solid rgba(245,158,11,.22);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:1.1rem;
+}
+
+.feature h4{
+  color:var(--white);
+
+  font-family:'Clash Display',sans-serif;
+
+  margin-bottom:4px;
+}
+
+.feature p{
+  color:#8a8a8a;
+
+  font-size:.82rem;
+
+  line-height:1.6;
+}
+
+/* RIGHT PANEL */
+
+.right-panel{
+  background:var(--white);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:64px 48px;
+}
+
+.signup-box{
+  width:100%;
+  max-width:420px;
+}
+
+.signup-header{
+  margin-bottom:34px;
+}
+
+.signup-header h2{
+  font-family:'Clash Display',sans-serif;
+
+  font-size:2rem;
+
+  letter-spacing:-1px;
+
+  margin-bottom:10px;
+}
+
+.signup-header p{
+  color:var(--gray);
+
+  font-size:.92rem;
+
+  line-height:1.6;
+}
+
+/* FORM */
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+
+  margin-bottom:8px;
+
+  font-size:.82rem;
+  font-weight:700;
+}
+
+input{
+  width:100%;
+
+  padding:14px 15px;
+
+  border-radius:12px;
+
+  border:1.5px solid var(--gray-light);
+
+  font-family:'Instrument Sans',sans-serif;
+
+  font-size:.92rem;
+
+  outline:none;
+
+  transition:.2s;
+}
+
+input:focus{
+  border-color:var(--amber);
+
+  box-shadow:0 0 0 3px rgba(245,158,11,.1);
+}
+
+input.error{
+  border-color:var(--red);
+  background:#fef2f2;
+}
+
+.field-error{
+  color:var(--red);
+
+  font-size:.78rem;
+
+  margin-top:6px;
+
+  display:none;
+}
+
+.field-error.show{
+  display:block;
+}
+
+/* BUTTON */
+
+.btn-signup{
+  width:100%;
+
+  margin-top:8px;
+
+  border:none;
+
+  background:var(--black);
+  color:var(--white);
+
+  padding:15px;
+
+  border-radius:12px;
+
+  font-size:.95rem;
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.btn-signup:hover{
+  background:var(--amber);
+  color:var(--black);
+}
+
+/* LOGIN TEXT */
+
+.login-text{
+  text-align:center;
+
+  margin-top:24px;
+
+  font-size:.88rem;
+
+  color:var(--gray);
+}
+
+.login-text a{
+  color:var(--amber-dark);
+
+  font-weight:700;
+
+  text-decoration:none;
+}
+
+/* SUCCESS */
+
+.success-box{
+  display:none;
+
+  text-align:center;
+
+  padding-top:30px;
+}
+
+.success-box.show{
+  display:block;
+}
+
+.success-icon{
+  width:78px;
+  height:78px;
+
+  border-radius:50%;
+
+  background:#dcfce7;
+
+  color:var(--green);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin:0 auto 20px;
+
+  font-size:2rem;
+}
+
+.success-box h2{
+  font-family:'Clash Display',sans-serif;
+
+  font-size:2rem;
+
+  margin-bottom:10px;
+}
+
+.success-box p{
+  color:var(--gray);
+
+  line-height:1.7;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:950px){
+
+  .page-body{
+    grid-template-columns:1fr;
+  }
+
+  .left-panel{
+    display:none;
+  }
+
+}
+
+@media(max-width:768px){
+
+  nav{
+    padding:0 20px;
+  }
+
+  .right-panel{
+    padding:40px 24px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+
+<nav>
+
+<a href="index.html" class="logo">
+  Device<em>Deck</em>
+</a>
+
+<a href="index.html" class="nav-back">
+  ← Back to Home
+</a>
+
+</nav>
+
+<!-- PAGE -->
+
+<div class="page-body">
+
+  <!-- LEFT -->
+
+  <div class="left-panel">
+
+    <div class="left-content">
+
+      <div class="left-tag">
+        <span></span>
+        DeviceDeck Platform Access
+      </div>
+
+      <h1>
+        Create Your <em>DeviceDeck</em> Account
+      </h1>
+
+      <p>
+        Join DeviceDeck to order custom PCs, book mobile repairs, manage enterprise inquiries, and access premium technology services from one platform.
+      </p>
+
+    </div>
+
+    <div class="features">
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🖥️
+        </div>
+
+        <div>
+          <h4>Custom PC Orders</h4>
+
+          <p>
+            Build and order high-performance systems tailored to your needs.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          📱
+        </div>
+
+        <div>
+          <h4>Mobile Service Booking</h4>
+
+          <p>
+            Schedule doorstep mobile repair and maintenance services easily.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🏢
+        </div>
+
+        <div>
+          <h4>Enterprise Solutions</h4>
+
+          <p>
+            Submit enterprise infrastructure inquiries and manage institutional services.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+
+  <div class="right-panel">
+
+    <div class="signup-box">
+
+      <!-- FORM -->
+
+      <div id="signupForm">
+
+        <div class="signup-header">
+
+          <h2>
+            Sign Up
+          </h2>
+
+          <p>
+            Create your account to continue with DeviceDeck services.
+          </p>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Full Name</label>
+
+          <input type="text" id="name" placeholder="Enter your full name">
+
+          <div class="field-error" id="nameError">
+            Please enter your full name
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Email Address</label>
+
+          <input type="email" id="email" placeholder="Enter your email">
+
+          <div class="field-error" id="emailError">
+            Please enter a valid email
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Phone Number</label>
+
+          <input type="tel" id="phone" placeholder="Enter your phone number">
+
+          <div class="field-error" id="phoneError">
+            Please enter your phone number
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Password</label>
+
+          <input type="password" id="password" placeholder="Create password">
+
+          <div class="field-error" id="passwordError">
+            Password must be at least 6 characters
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Confirm Password</label>
+
+          <input type="password" id="confirmPassword" placeholder="Confirm password">
+
+          <div class="field-error" id="confirmError">
+            Passwords do not match
+          </div>
+
+        </div>
+
+        <button class="btn-signup" onclick="createAccount()">
+          Create Account →
+        </button>
+
+        <div class="login-text">
+
+          Already have an account?
+          <a href="login.html">Log In</a>
+
+        </div>
+
+      </div>
+
+      <!-- SUCCESS -->
+
+      <div class="success-box" id="successBox">
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <h2>
+          Account Created
+        </h2>
+
+        <p>
+          Your DeviceDeck account has been successfully created.<br>
+          Redirecting to login page...
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+function showError(inputId,errorId){
+
+  document.getElementById(inputId).classList.add('error');
+
+  document.getElementById(errorId).classList.add('show');
+
+}
+
+function clearError(inputId,errorId){
+
+  document.getElementById(inputId).classList.remove('error');
+
+  document.getElementById(errorId).classList.remove('show');
+
+}
+
+function createAccount(){
+
+  const name = document.getElementById('name').value.trim();
+
+  const email = document.getElementById('email').value.trim();
+
+  const phone = document.getElementById('phone').value.trim();
+
+  const password = document.getElementById('password').value;
+
+  const confirmPassword = document.getElementById('confirmPassword').value;
+
+  let valid = true;
+
+  // NAME
+
+  if(name === ''){
+
+    showError('name','nameError');
+
+    valid = false;
+
+  }else{
+
+    clearError('name','nameError');
+
+  }
+
+  // EMAIL
+
+  if(email === '' || !email.includes('@')){
+
+    showError('email','emailError');
+
+    valid = false;
+
+  }else{
+
+    clearError('email','emailError');
+
+  }
+
+  // PHONE
+
+  if(phone === ''){
+
+    showError('phone','phoneError');
+
+    valid = false;
+
+  }else{
+
+    clearError('phone','phoneError');
+
+  }
+
+  // PASSWORD
+
+  if(password.length < 6){
+
+    showError('password','passwordError');
+
+    valid = false;
+
+  }else{
+
+    clearError('password','passwordError');
+
+  }
+
+  // CONFIRM PASSWORD
+
+  if(password !== confirmPassword || confirmPassword === ''){
+
+    showError('confirmPassword','confirmError');
+
+    valid = false;
+
+  }else{
+
+    clearError('confirmPassword','confirmError');
+
+  }
+
+  if(!valid){
+    return;
+  }
+
+  // SAVE USER DATA
+
+  localStorage.setItem('userName',name);
+
+  localStorage.setItem('userEmail',email);
+
+  localStorage.setItem('userPhone',phone);
+
+  localStorage.setItem('userPassword',password);
+
+  // SUCCESS UI
+
+  document.getElementById('signupForm').style.display='none';
+
+  document.getElementById('successBox').classList.add('show');
+
+  // REDIRECT
+
+  setTimeout(()=>{
+
+    window.location.href='login.html';
+
+  },2000);
+
+}
+
+</script>
+
+</body>
+</html>

@@ -286,7 +286,7 @@ select.comp-select:hover{border-color:#aaa;}
   </ul>
   <div class="nav-right">
     <a href="login.html" class="nav-login">Log In</a>
-    <a href="index.html#contact" class="nav-cta">Get a Quote</a>
+    <a href="signup.html" class="nav-cta">Sign Up</a>
   </div>
 </nav>
 
@@ -1083,6 +1083,14 @@ function selectCustomPay(method){
   });
 }
 function confirmOrder(){
+  const loggedIn = localStorage.getItem("loggedIn");
+
+if(loggedIn !== "true"){
+
+  window.location.href = "login.html";
+
+  return;
+}
   document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('show'));
   setTimeout(()=>alert('🎉 Order placed! Our team will contact you within 2 hours to confirm your build and share payment details.'),200);
 }

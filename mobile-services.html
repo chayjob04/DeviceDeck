@@ -992,6 +992,14 @@ function clearError(id){
 }
 
 function confirmBooking(){
+    const loggedIn = localStorage.getItem("loggedIn");
+
+if(loggedIn !== "true"){
+
+  window.location.href = "login.html";
+
+  return;
+}
 
   const requiredFields = [
     'brand',

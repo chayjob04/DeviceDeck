@@ -658,6 +658,7 @@ textarea{
 
 <div class="nav-right">
   <a href="login.html" class="nav-login">Log In</a>
+  <a href="signup.html" class="nav-login" style="border-color:var(--gray-light)">Sign Up</a>
   <a href="#inquiry" class="nav-btn">Enterprise Inquiry</a>
 </div>
 
@@ -1004,6 +1005,15 @@ textarea{
 <script>
 
 function submitInquiry(){
+
+  const loggedIn = localStorage.getItem("loggedIn");
+
+  if(loggedIn !== "true"){
+
+    window.location.href = "login.html";
+
+    return;
+  }
 
   const requiredFields = [
     'company',
