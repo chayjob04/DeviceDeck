@@ -594,7 +594,13 @@ body.is-logged-in .pp-guest-only { display: none; }
 
 </div>
 
-<script>
+<script type="module">
+  import {
+  auth,
+  provider,
+  signInWithEmailAndPassword,
+  signInWithPopup
+} from "./firebase.js";
 const emailInput = document.getElementById('email');
 const pwdInput = document.getElementById('password');
 const emailError = document.getElementById('emailError');
@@ -627,7 +633,7 @@ function validateEmail(v) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
-function handleLogin() {
+window.handleLogin = function() {
   let valid = true;
   const email = emailInput.value.trim();
   const pwd = pwdInput.value;
@@ -644,31 +650,78 @@ function handleLogin() {
   }
   if (!valid) return;
 
-  // Simulate login
-  loginBtn.classList.add('loading');
-  loginBtn.disabled = true;
+loginBtn.classList.add('loading');
 
- setTimeout(() => {
+loginBtn.disabled = true;
+
+signInWithEmailAndPassword(auth, email, pwd)
+
+.then((userCredential) => {
+
+  localStorage.setItem("loggedIn", "true");
+
+  localStorage.setItem(
+    "userEmail",
+    userCredential.user.email
+  );
+
+  document.getElementById('loginForm').style.display = 'none';
+
+  document.getElementById('successState').classList.add('show');
+
+  setTimeout(() => {
+
+    window.location.href = "index.html";
+
+  }, 1200);
+
+})
+
+.catch((error) => {
+
+  alert(error.message);
+
+  loginBtn.classList.remove('loading');
+
+  loginBtn.disabled = false;
+
+});
+window.handleGoogle = function() {
+
+  signInWithPopup(auth, provider)
+
+  .then((result) => {
+
+    localStorage.setItem("loggedIn", "true");
+
+    localStorage.setItem(
+      "userName",
+      result.user.displayName || "User"
+    );
+
+    localStorage.setItem(
+      "userEmail",
+      result.user.email
+    );
 
     document.getElementById('loginForm').style.display = 'none';
 
     document.getElementById('successState').classList.add('show');
 
-    // SAVE LOGIN STATUS
-    localStorage.setItem("loggedIn", "true");
-
-    // REDIRECT AFTER SUCCESS
     setTimeout(() => {
 
-        window.location.href = "index.html";
+      window.location.href = "index.html";
 
     }, 1200);
 
-}, 1800);
-}
+  })
 
-function handleGoogle() {
-  alert('Google sign-in would be integrated here via OAuth.');
+  .catch((error) => {
+
+    alert(error.message);
+
+  });
+
 }
 
 // Enter key support
@@ -817,6 +870,7 @@ document.addEventListener('keydown', (e) => {
   ddInitProfile();
   document.addEventListener('DOMContentLoaded', ddInitProfile);
 })();
+}
 </script>
 
 </body>
