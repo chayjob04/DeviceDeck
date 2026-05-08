@@ -373,7 +373,7 @@ input.error{
   display:block;
 }
 
-/* BUTTON */
+/* BUTTONS */
 
 .btn-signup{
   width:100%;
@@ -400,6 +400,69 @@ input.error{
 .btn-signup:hover{
   background:var(--amber);
   color:var(--black);
+}
+
+.divider{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  margin:24px 0;
+
+  color:var(--gray);
+
+  font-size:0.8rem;
+}
+
+.divider::before,
+.divider::after{
+  content:'';
+
+  flex:1;
+  height:1px;
+
+  background:var(--gray-light);
+}
+
+.btn-google{
+
+  width:100%;
+
+  background:var(--white);
+  color:var(--black);
+
+  border:1.5px solid var(--gray-light);
+
+  border-radius:12px;
+
+  padding:14px;
+
+  font-family:'Instrument Sans',sans-serif;
+
+  font-size:.92rem;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:border-color .2s,background .2s;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.btn-google:hover{
+
+  border-color:var(--black);
+
+  background:var(--off);
+
+}
+
+.google-icon{
+  width:18px;
+  height:18px;
 }
 
 /* LOGIN TEXT */
@@ -500,8 +563,6 @@ input.error{
 
 <body>
 
-<!-- NAV -->
-
 <nav>
 
 <a href="index.html" class="logo">
@@ -514,202 +575,185 @@ input.error{
 
 </nav>
 
-<!-- PAGE -->
-
 <div class="page-body">
 
-  <!-- LEFT -->
+<div class="left-panel">
 
-  <div class="left-panel">
+<div class="left-content">
 
-    <div class="left-content">
+<div class="left-tag">
+<span></span>
+DeviceDeck Platform Access
+</div>
 
-      <div class="left-tag">
-        <span></span>
-        DeviceDeck Platform Access
-      </div>
+<h1>
+Create Your <em>DeviceDeck</em> Account
+</h1>
 
-      <h1>
-        Create Your <em>DeviceDeck</em> Account
-      </h1>
+<p>
+Join DeviceDeck to order custom PCs, book mobile repairs, manage enterprise inquiries, and access premium technology services from one platform.
+</p>
 
-      <p>
-        Join DeviceDeck to order custom PCs, book mobile repairs, manage enterprise inquiries, and access premium technology services from one platform.
-      </p>
+</div>
 
-    </div>
+<div class="features">
 
-    <div class="features">
+<div class="feature">
+<div class="feature-icon">🖥️</div>
+<div>
+<h4>Custom PC Orders</h4>
+<p>Build and order high-performance systems tailored to your needs.</p>
+</div>
+</div>
 
-      <div class="feature">
+<div class="feature">
+<div class="feature-icon">📱</div>
+<div>
+<h4>Mobile Service Booking</h4>
+<p>Schedule doorstep mobile repair and maintenance services easily.</p>
+</div>
+</div>
 
-        <div class="feature-icon">
-          🖥️
-        </div>
+<div class="feature">
+<div class="feature-icon">🏢</div>
+<div>
+<h4>Enterprise Solutions</h4>
+<p>Submit enterprise infrastructure inquiries and manage institutional services.</p>
+</div>
+</div>
 
-        <div>
-          <h4>Custom PC Orders</h4>
+</div>
 
-          <p>
-            Build and order high-performance systems tailored to your needs.
-          </p>
-        </div>
+</div>
 
-      </div>
+<div class="right-panel">
 
-      <div class="feature">
+<div class="signup-box">
 
-        <div class="feature-icon">
-          📱
-        </div>
+<div id="signupForm">
 
-        <div>
-          <h4>Mobile Service Booking</h4>
+<div class="signup-header">
 
-          <p>
-            Schedule doorstep mobile repair and maintenance services easily.
-          </p>
-        </div>
+<h2>
+Sign Up
+</h2>
 
-      </div>
+<p>
+Create your account to continue with DeviceDeck services.
+</p>
 
-      <div class="feature">
+</div>
 
-        <div class="feature-icon">
-          🏢
-        </div>
+<div class="form-group">
 
-        <div>
-          <h4>Enterprise Solutions</h4>
+<label>Full Name</label>
 
-          <p>
-            Submit enterprise infrastructure inquiries and manage institutional services.
-          </p>
-        </div>
+<input type="text" id="name" placeholder="Enter your full name">
 
-      </div>
+<div class="field-error" id="nameError">
+Please enter your full name
+</div>
 
-    </div>
+</div>
 
-  </div>
+<div class="form-group">
 
-  <!-- RIGHT -->
+<label>Email Address</label>
 
-  <div class="right-panel">
+<input type="email" id="email" placeholder="Enter your email">
 
-    <div class="signup-box">
+<div class="field-error" id="emailError">
+Please enter a valid email
+</div>
 
-      <!-- FORM -->
+</div>
 
-      <div id="signupForm">
+<div class="form-group">
 
-        <div class="signup-header">
+<label>Phone Number</label>
 
-          <h2>
-            Sign Up
-          </h2>
+<input type="tel" id="phone" placeholder="Enter your phone number">
 
-          <p>
-            Create your account to continue with DeviceDeck services.
-          </p>
+<div class="field-error" id="phoneError">
+Please enter your phone number
+</div>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="form-group">
 
-          <label>Full Name</label>
+<label>Password</label>
 
-          <input type="text" id="name" placeholder="Enter your full name">
+<input type="password" id="password" placeholder="Create password">
 
-          <div class="field-error" id="nameError">
-            Please enter your full name
-          </div>
+<div class="field-error" id="passwordError">
+Password must be at least 6 characters
+</div>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="form-group">
 
-          <label>Email Address</label>
+<label>Confirm Password</label>
 
-          <input type="email" id="email" placeholder="Enter your email">
+<input type="password" id="confirmPassword" placeholder="Confirm password">
 
-          <div class="field-error" id="emailError">
-            Please enter a valid email
-          </div>
+<div class="field-error" id="confirmError">
+Passwords do not match
+</div>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<button class="btn-signup" onclick="createAccount()">
+Create Account →
+</button>
 
-          <label>Phone Number</label>
+<div class="divider">
+or continue with
+</div>
 
-          <input type="tel" id="phone" placeholder="Enter your phone number">
+<button class="btn-google" type="button" onclick="handleGoogleSignup()">
 
-          <div class="field-error" id="phoneError">
-            Please enter your phone number
-          </div>
+<svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+</svg>
 
-        </div>
+Continue with Google
 
-        <div class="form-group">
+</button>
 
-          <label>Password</label>
+<div class="login-text">
 
-          <input type="password" id="password" placeholder="Create password">
+Already have an account?
+<a href="login.html">Log In</a>
 
-          <div class="field-error" id="passwordError">
-            Password must be at least 6 characters
-          </div>
+</div>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="success-box" id="successBox">
 
-          <label>Confirm Password</label>
+<div class="success-icon">
+✓
+</div>
 
-          <input type="password" id="confirmPassword" placeholder="Confirm password">
+<h2>
+Account Created
+</h2>
 
-          <div class="field-error" id="confirmError">
-            Passwords do not match
-          </div>
+<p>
+Your DeviceDeck account has been successfully created.<br>
+Redirecting to login page...
+</p>
 
-        </div>
+</div>
 
-        <button class="btn-signup" onclick="createAccount()">
-          Create Account →
-        </button>
+</div>
 
-        <div class="login-text">
-
-          Already have an account?
-          <a href="login.html">Log In</a>
-
-        </div>
-
-      </div>
-
-      <!-- SUCCESS -->
-
-      <div class="success-box" id="successBox">
-
-        <div class="success-icon">
-          ✓
-        </div>
-
-        <h2>
-          Account Created
-        </h2>
-
-        <p>
-          Your DeviceDeck account has been successfully created.<br>
-          Redirecting to login page...
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
+</div>
 
 </div>
 
@@ -717,131 +761,121 @@ input.error{
 
 function showError(inputId,errorId){
 
-  document.getElementById(inputId).classList.add('error');
+document.getElementById(inputId).classList.add('error');
 
-  document.getElementById(errorId).classList.add('show');
+document.getElementById(errorId).classList.add('show');
 
 }
 
 function clearError(inputId,errorId){
 
-  document.getElementById(inputId).classList.remove('error');
+document.getElementById(inputId).classList.remove('error');
 
-  document.getElementById(errorId).classList.remove('show');
+document.getElementById(errorId).classList.remove('show');
 
 }
 
 function createAccount(){
 
-  const name = document.getElementById('name').value.trim();
+const name = document.getElementById('name').value.trim();
 
-  const email = document.getElementById('email').value.trim();
+const email = document.getElementById('email').value.trim();
 
-  const phone = document.getElementById('phone').value.trim();
+const phone = document.getElementById('phone').value.trim();
 
-  const password = document.getElementById('password').value;
+const password = document.getElementById('password').value;
 
-  const confirmPassword = document.getElementById('confirmPassword').value;
+const confirmPassword = document.getElementById('confirmPassword').value;
 
-  let valid = true;
+let valid = true;
 
-  // NAME
+if(name === ''){
 
-  if(name === ''){
+showError('name','nameError');
 
-    showError('name','nameError');
+valid = false;
 
-    valid = false;
+}else{
 
-  }else{
+clearError('name','nameError');
 
-    clearError('name','nameError');
+}
 
-  }
+if(email === '' || !email.includes('@')){
 
-  // EMAIL
+showError('email','emailError');
 
-  if(email === '' || !email.includes('@')){
+valid = false;
 
-    showError('email','emailError');
+}else{
 
-    valid = false;
+clearError('email','emailError');
 
-  }else{
+}
 
-    clearError('email','emailError');
+if(phone === ''){
 
-  }
+showError('phone','phoneError');
 
-  // PHONE
+valid = false;
 
-  if(phone === ''){
+}else{
 
-    showError('phone','phoneError');
+clearError('phone','phoneError');
 
-    valid = false;
+}
 
-  }else{
+if(password.length < 6){
 
-    clearError('phone','phoneError');
+showError('password','passwordError');
 
-  }
+valid = false;
 
-  // PASSWORD
+}else{
 
-  if(password.length < 6){
+clearError('password','passwordError');
 
-    showError('password','passwordError');
+}
 
-    valid = false;
+if(password !== confirmPassword || confirmPassword === ''){
 
-  }else{
+showError('confirmPassword','confirmError');
 
-    clearError('password','passwordError');
+valid = false;
 
-  }
+}else{
 
-  // CONFIRM PASSWORD
+clearError('confirmPassword','confirmError');
 
-  if(password !== confirmPassword || confirmPassword === ''){
+}
 
-    showError('confirmPassword','confirmError');
+if(!valid){
+return;
+}
 
-    valid = false;
+localStorage.setItem('userName',name);
 
-  }else{
+localStorage.setItem('userEmail',email);
 
-    clearError('confirmPassword','confirmError');
+localStorage.setItem('userPhone',phone);
 
-  }
+localStorage.setItem('userPassword',password);
 
-  if(!valid){
-    return;
-  }
+document.getElementById('signupForm').style.display='none';
 
-  // SAVE USER DATA
+document.getElementById('successBox').classList.add('show');
 
-  localStorage.setItem('userName',name);
+setTimeout(()=>{
 
-  localStorage.setItem('userEmail',email);
+window.location.href='login.html';
 
-  localStorage.setItem('userPhone',phone);
+},2000);
 
-  localStorage.setItem('userPassword',password);
+}
 
-  // SUCCESS UI
+function handleGoogleSignup(){
 
-  document.getElementById('signupForm').style.display='none';
-
-  document.getElementById('successBox').classList.add('show');
-
-  // REDIRECT
-
-  setTimeout(()=>{
-
-    window.location.href='login.html';
-
-  },2000);
+alert('Google Sign Up will be integrated here via Firebase.');
 
 }
 
