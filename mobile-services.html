@@ -922,7 +922,7 @@ body.is-logged-in .pp-guest-only { display: none; }
 
           <div class="form-group">
             <label>Preferred Time</label>
-            <select>
+<select id="preferredTime">
               <option>Morning (9AM - 12PM)</option>
               <option>Afternoon (12PM - 4PM)</option>
               <option>Evening (4PM - 8PM)</option>
@@ -931,7 +931,7 @@ body.is-logged-in .pp-guest-only { display: none; }
 
           <div class="form-group full">
             <label>Address</label>
-            <textarea placeholder="Enter your complete address"></textarea>
+            <textarea id="customerAddress" placeholder="Enter your complete address"></textarea>
           </div>
 
         </div>
@@ -1017,7 +1017,16 @@ body.is-logged-in .pp-guest-only { display: none; }
 
 </div>
 
-<script>
+<script type="module">
+    import {
+  db
+} from "./firebase.js";
+
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 let selectedType = '';
 let selectedIssue = '';
 
@@ -1055,7 +1064,7 @@ const modelsByBrand = {
   ]
 };
 
-function updateModels(){
+window.updateModels = function(){
 
   const brand = document.getElementById('brand').value;
   const modelSelect = document.getElementById('model');
@@ -1074,7 +1083,7 @@ function updateModels(){
   updateSummary();
 }
 
-function selectProblem(type, element){
+window.selectProblem = function(type, element){
   selectedType = type;
 
   document.querySelectorAll('.problem-card').forEach(card=>{
@@ -1098,8 +1107,7 @@ function selectProblem(type, element){
     type.charAt(0).toUpperCase() + type.slice(1);
 }
 
-function selectIssue(element, issue){
-
+window.selectIssue = function(element, issue){
   document.querySelectorAll('.issue-option').forEach(opt=>{
     opt.classList.remove('active');
   });
@@ -1117,7 +1125,7 @@ function selectIssue(element, issue){
   }
 }
 
-function updateSummary(){
+window.updateSummary = function(){
   document.getElementById('sBrand').textContent = document.getElementById('brand').value || '—';
 
   document.getElementById('sModel').textContent = document.getElementById('model').value || '—';
@@ -1144,7 +1152,7 @@ function clearError(id){
   field.style.background = '';
 }
 
-function confirmBooking(){
+window.confirmBooking = async function(){
     const loggedIn = localStorage.getItem("loggedIn");
 
 if(loggedIn !== "true"){
@@ -1190,11 +1198,47 @@ if(selectedIssue === 'Other'){
 if(!valid){
   return;
 }
+try {
 
+  await addDoc(collection(db, "mobileBookings"), {
+
+  brand: document.getElementById('brand').value,
+
+  model: document.getElementById('model').value,
+
+  storage: document.getElementById('storage').value,
+
+  customerName: document.getElementById('customerName').value,
+
+  customerPhone: document.getElementById('customerPhone').value,
+
+  whatsapp: document.getElementById('whatsapp').value,
+
+  preferredTime: document.getElementById('preferredTime').value,
+
+  address: document.getElementById('customerAddress').value,
+
+  issueType: selectedType,
+
+  issue: selectedIssue,
+
+  customIssue: document.getElementById('customIssue').value,
+
+  createdAt: serverTimestamp()
+
+});
+
+} catch(error){
+
+  alert(error.message);
+
+  return;
+
+}
 document.getElementById('successModal').classList.add('show');
 }
 
-function closeModal(){
+window.closeModal = function(){
   document.getElementById('successModal').classList.remove('show');
 }
 
