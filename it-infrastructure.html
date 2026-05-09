@@ -1089,7 +1089,7 @@ body.is-logged-in .pp-guest-only { display: none; }
 
           <div class="form-group full">
             <label>Requirement Description</label>
-            <textarea id="message" placeholder="Example: We need a 60-system computer lab setup with networking and long-term maintenance support for our engineering college."></textarea>
+            <textarea id="message" placeholder="Example: Need 20 systems with networking"></textarea>
           </div>
 
         </div>
@@ -1199,7 +1199,21 @@ window.submitInquiry = async function(){
   });
 
   if(!valid) return;
+  const wordCount =
+document.getElementById('message')
+.value
+.trim()
+.split(/\s+/)
+.filter(word => word.length > 0)
+.length;
 
+if(wordCount < 5){
+
+  alert("Minimum 5 words required");
+
+  return;
+
+}
   const btn = document.querySelector('.submit-btn');
   if(btn){ btn.disabled = true; btn.textContent = 'Submitting...'; }
 

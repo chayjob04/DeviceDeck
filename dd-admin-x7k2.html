@@ -632,7 +632,7 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
       <tbody id="pcTableBody">
 
         <tr class="loading-row">
-          <td colspan="5">
+          <td colspan="4">
             <span class="spinner-inline"></span>
             Loading PC Orders…
           </td>
@@ -660,6 +660,7 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
         <th>Institution Type</th>
         <th>Contact Person</th>
         <th>Phone</th>
+        <th>Description</th>
         </tr>
       </thead>
 
@@ -815,6 +816,7 @@ function startITListener(){
         <td>${d.type || '-'}</td>
         <td>${d.person || '-'}</td>
         <td>${d.phone || '-'}</td>
+        <td>${d.message || '-'}</td>
     </tr>
     `;
 
@@ -824,7 +826,7 @@ function startITListener(){
 
       html = `
       <tr>
-        <td colspan="4">
+        <td colspan="6
           <div class="table-empty">
             <div class="e-icon">🏢</div>
             <p>No IT Inquiries Found</p>
