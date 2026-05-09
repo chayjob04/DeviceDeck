@@ -1064,7 +1064,7 @@ const gpuData = {
   none: [{label:'Integrated Graphics (No GPU)', price:0}]
 };
 
-function updateCPUModels(){
+window.updateCPUModels = function(){
   const brand = document.getElementById('cpu-brand').value;
   const modelSel = document.getElementById('cpu-model');
   modelSel.innerHTML = '<option value="">Select model</option>';
@@ -1077,7 +1077,7 @@ function updateCPUModels(){
   }
   updatePrice();
 }
-function updateGPUModels(){
+window.updateGPUModels = function(){
   const brand = document.getElementById('gpu-brand').value;
   const modelSel = document.getElementById('gpu-model');
   modelSel.innerHTML = '<option value="">Select model</option>';
@@ -1110,7 +1110,7 @@ function getSelectText(id){
 
 const REQUIRED = ['cpu-model','mobo','ram','ssd','cabinet','cooler','psu'];
 
-function updatePrice(){
+window.updatePrice = function(){
   let total = 0;
   // CPU
   total += getSelectPrice('cpu-model');
@@ -1209,7 +1209,7 @@ window.filterCards = function(cat, btn){
 
 // Modal
 let selectedPay = 'upi';
-function openBuyModal(name, price, cat){
+window.openBuyModal = function(name, price, cat){
   document.getElementById('modal-model').textContent = name;
   document.getElementById('modal-price').textContent = price;
   document.getElementById('modal-cat').textContent = cat;
@@ -1232,13 +1232,13 @@ window.openCustomModal = function(){
 }
 window.closeModal = function(id){
    document.getElementById(id).classList.remove('show'); }
-function selectPay(method){
+window.selectPay = function(method){
   selectedPay = method;
   ['upi','card','emi','cod'].forEach(m=>{
     document.getElementById('pay-'+m)?.classList.toggle('selected', m===method);
   });
 }
-function selectCustomPay(method){
+window.selectCustomPay = function(method){
   ['upi','card','emi','cod'].forEach(m=>{
     document.getElementById('cpay-'+m)?.classList.toggle('selected', m===method);
   });
@@ -1300,7 +1300,7 @@ window.confirmOrder = async function(){
 
 }
 // Reset
-function resetBuilder(){
+window.resetBuilder = function(){
   if(!confirm('Reset all selections?')) return;
   ['cpu-brand','cpu-model','mobo','mobo-form','gpu-brand','gpu-model','ram','ram-sticks','ssd','hdd','cabinet','cooler','psu','psu-cable','monitor','periph'].forEach(id=>{
     const el = document.getElementById(id);
