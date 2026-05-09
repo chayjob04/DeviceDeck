@@ -655,16 +655,18 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
       <thead>
         <tr>
           <th>#</th>
-          <th>Company</th>
-          <th>Service</th>
-          <th>Phone</th>
+         <th>#</th>
+        <th>Company</th>
+        <th>Institution Type</th>
+        <th>Contact Person</th>
+        <th>Phone</th>
         </tr>
       </thead>
 
       <tbody id="itTableBody">
 
         <tr class="loading-row">
-          <td colspan="4">
+          <td colspan="5">
             <span class="spinner-inline"></span>
             Loading IT Inquiries…
           </td>
@@ -806,14 +808,15 @@ function startITListener(){
 
       const d = doc.data();
 
-      html += `
-        <tr>
-          <td>${count}</td>
-          <td>${d.companyName || '-'}</td>
-          <td>${d.service || '-'}</td>
-          <td>${d.phone || '-'}</td>
-        </tr>
-      `;
+        html += `
+    <tr>
+        <td>${count}</td>
+        <td>${d.company || '-'}</td>
+        <td>${d.type || '-'}</td>
+        <td>${d.person || '-'}</td>
+        <td>${d.phone || '-'}</td>
+    </tr>
+    `;
 
     });
 
