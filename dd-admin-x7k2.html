@@ -506,10 +506,10 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
       <button class="nav-item active" onclick="setView('bookings')">
         <span class="ni-icon">📱</span> Mobile Bookings
       </button>
-      <button class="nav-item" onclick="setView('inquiries')" style="opacity:.45;cursor:not-allowed;" disabled title="Coming soon">
+      <button class="nav-item" onclick="setView('inquiries')">
         <span class="ni-icon">🏢</span> IT Inquiries
       </button>
-      <button class="nav-item" onclick="setView('pcorders')" style="opacity:.45;cursor:not-allowed;" disabled title="Coming soon">
+      <button class="nav-item" onclick="setView('pcorders')">
         <span class="ni-icon">🖥️</span> PC Orders
       </button>
       <div style="margin-top:auto;"></div>
@@ -973,8 +973,16 @@ window.toggleSidebar = function() {
 };
 window.addEventListener('resize', checkMobile);
 
-window.setView = function(v) {
-  // placeholder for future views
+window.setView = function(v){
+
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    n.classList.remove('active');
+  });
+
+  event.currentTarget.classList.add('active');
+
+  alert(v + " section coming next");
+
 };
 
 // Keyboard shortcut ESC
