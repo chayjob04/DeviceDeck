@@ -958,13 +958,22 @@ document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
     document.body.style.overflow = '';
   };
   window.ddSignOut = function() {
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userPhone');
-    localStorage.removeItem('userPassword');
-    ddCloseProfile();
-    window.location.href = 'index.html';
+    // Call firebase signOut if available (exposed by module script)
+    var fbOut = window._fbSignOut;
+    function clearAndRedirect() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('userPassword');
+      ddCloseProfile();
+      window.location.href = 'index.html';
+    }
+    if (typeof fbOut === 'function') {
+      fbOut().then(clearAndRedirect).catch(clearAndRedirect);
+    } else {
+      clearAndRedirect();
+    }
   };
 
   document.addEventListener('keydown', function(e) {

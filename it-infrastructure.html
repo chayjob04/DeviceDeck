@@ -1155,64 +1155,78 @@ body.is-logged-in .pp-guest-only { display: none; }
 
 </section>
 
-<script>
+<script type="module">
+import {
+  auth,
+  db,
+  signOut as firebaseSignOut
+} from "./firebase.js";
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-function submitInquiry(){
+window._fbSignOut = () => firebaseSignOut(auth);
+
+window.submitInquiry = async function(){
 
   const loggedIn = localStorage.getItem("loggedIn");
 
   if(loggedIn !== "true"){
-
     window.location.href = "login.html";
-
     return;
   }
 
   const requiredFields = [
-    'company',
-    'type',
-    'person',
-    'phone',
-    'email',
-    'systems',
-    'server',
-    'contract',
-    'message'
+    'company','type','person','phone','email',
+    'systems','server','contract','message'
   ];
 
   let valid = true;
 
   requiredFields.forEach(id=>{
-
     const field = document.getElementById(id);
-
+    if(!field) return;
     if(!field.value.trim()){
-
       field.style.borderColor = '#dc2626';
       field.style.background = '#fef2f2';
-
       valid = false;
-
     }else{
-
       field.style.borderColor = '';
       field.style.background = '';
-
     }
-
   });
 
-  if(!valid){
-    return;
+  if(!valid) return;
+
+  const btn = document.querySelector('.submit-btn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Submitting...'; }
+
+  try {
+    await addDoc(collection(db, "itInquiries"), {
+      company:  document.getElementById('company')?.value  || '',
+      type:     document.getElementById('type')?.value     || '',
+      person:   document.getElementById('person')?.value   || '',
+      phone:    document.getElementById('phone')?.value    || '',
+      email:    document.getElementById('email')?.value    || '',
+      systems:  document.getElementById('systems')?.value  || '',
+      server:   document.getElementById('server')?.value   || '',
+      contract: document.getElementById('contract')?.value || '',
+      message:  document.getElementById('message')?.value  || '',
+      userEmail: localStorage.getItem('userEmail') || '',
+      submittedAt: serverTimestamp()
+    });
+
+    const box = document.getElementById('successBox');
+    if(box){
+      box.style.display = 'block';
+      window.scrollTo({ top: box.offsetTop - 120, behavior:'smooth' });
+    }
+  } catch(err) {
+    alert('Submission failed: ' + err.message);
+    if(btn){ btn.disabled = false; btn.textContent = 'Submit Inquiry →'; }
   }
-
-  document.getElementById('successBox').style.display = 'block';
-
-  window.scrollTo({
-    top:document.getElementById('successBox').offsetTop - 120,
-    behavior:'smooth'
-  });
-
 }
 
 /* REVEAL */
@@ -1363,13 +1377,22 @@ document.querySelectorAll('.reveal').forEach(el=>{
     document.body.style.overflow = '';
   };
   window.ddSignOut = function() {
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userPhone');
-    localStorage.removeItem('userPassword');
-    ddCloseProfile();
-    window.location.href = 'index.html';
+    // Call firebase signOut if available (exposed by module script)
+    var fbOut = window._fbSignOut;
+    function clearAndRedirect() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('userPassword');
+      ddCloseProfile();
+      window.location.href = 'index.html';
+    }
+    if (typeof fbOut === 'function') {
+      fbOut().then(clearAndRedirect).catch(clearAndRedirect);
+    } else {
+      clearAndRedirect();
+    }
   };
 
   document.addEventListener('keydown', function(e) {

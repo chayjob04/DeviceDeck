@@ -599,8 +599,11 @@ body.is-logged-in .pp-guest-only { display: none; }
   auth,
   provider,
   signInWithEmailAndPassword,
-  signInWithPopup
+  signInWithPopup,
+  signOut as firebaseSignOut
 } from "./firebase.js";
+  // Expose firebase signOut for the profile panel (non-module script)
+  window._fbSignOut = () => firebaseSignOut(auth);
 const emailInput = document.getElementById('email');
 const pwdInput = document.getElementById('password');
 const emailError = document.getElementById('emailError');
@@ -664,6 +667,9 @@ signInWithEmailAndPassword(auth, email, pwd)
     "userEmail",
     userCredential.user.email
   );
+  // Save display name (may be null for email login — use email prefix)
+  var dname = userCredential.user.displayName || userCredential.user.email.split('@')[0];
+  localStorage.setItem("userName", dname);
 
   document.getElementById('loginForm').style.display = 'none';
 
@@ -855,13 +861,22 @@ document.addEventListener('keydown', (e) => {
     document.body.style.overflow = '';
   };
   window.ddSignOut = function() {
-    localStorage.removeItem('loggedIn');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userPhone');
-    localStorage.removeItem('userPassword');
-    ddCloseProfile();
-    window.location.href = 'index.html';
+    // Call firebase signOut if available (exposed by module script)
+    var fbOut = window._fbSignOut;
+    function clearAndRedirect() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userPhone');
+      localStorage.removeItem('userPassword');
+      ddCloseProfile();
+      window.location.href = 'index.html';
+    }
+    if (typeof fbOut === 'function') {
+      fbOut().then(clearAndRedirect).catch(clearAndRedirect);
+    } else {
+      clearAndRedirect();
+    }
   };
 
   document.addEventListener('keydown', function(e) {
