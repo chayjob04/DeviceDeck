@@ -793,10 +793,7 @@ function startPCListener(){
 }
 function startITListener(){
 
-  const q = query(
-    collection(db, "itInquiries"),
-    orderBy("createdAt", "desc")
-  );
+  const q = collection(db, "itInquiries");
 
   onSnapshot(q, (snapshot)=>{
 
