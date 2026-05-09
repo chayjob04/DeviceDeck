@@ -581,7 +581,7 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
     </div>
 
     <!-- TABLE -->
-    <div class="table-wrap">
+    <div class="table-wrap admin-section" id="bookingsSection">
       <div class="table-header">
         <span class="table-title">Customer Bookings</span>
         <span class="count-badge" id="countBadge">0 records</span>
@@ -610,7 +610,71 @@ td{padding:14px 16px;font-size:.84rem;vertical-align:middle;}
         </table>
       </div>
     </div>
+<div class="table-wrap admin-section" id="pcordersSection" style="display:none;">
 
+  <div class="table-header">
+    <span class="table-title">PC Build Orders</span>
+    <span class="count-badge" id="pcCountBadge">0 records</span>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>CPU</th>
+          <th>GPU</th>
+          <th>RAM</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+
+      <tbody id="pcTableBody">
+
+        <tr class="loading-row">
+          <td colspan="5">
+            <span class="spinner-inline"></span>
+            Loading PC Orders…
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div class="table-wrap admin-section" id="inquiriesSection" style="display:none;">
+
+  <div class="table-header">
+    <span class="table-title">IT Infrastructure Inquiries</span>
+    <span class="count-badge" id="itCountBadge">0 records</span>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Company</th>
+          <th>Service</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+
+      <tbody id="itTableBody">
+
+        <tr class="loading-row">
+          <td colspan="4">
+            <span class="spinner-inline"></span>
+            Loading IT Inquiries…
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
   </main>
 </div>
 
@@ -656,6 +720,8 @@ window._firestoreLib = { collection, onSnapshot, query, orderBy };
 
 // ── Start listener ──
 startListener();
+startPCListener();
+startITListener();
 
 function startListener() {
   const q = query(collection(db, "mobileBookings"), orderBy("createdAt", "desc"));
@@ -672,7 +738,111 @@ function startListener() {
   });
   window._unsubscribe = unsub;
 }
+function startPCListener(){
 
+  const q = query(
+    collection(db, "pcBuildOrders"),
+    orderBy("createdAt", "desc")
+  );
+
+  onSnapshot(q, (snapshot)=>{
+
+    let html = '';
+    let count = 0;
+
+    snapshot.forEach((doc)=>{
+
+      count++;
+
+      const d = doc.data();
+
+      html += `
+        <tr>
+          <td>${count}</td>
+          <td>${d.cpuModel || '-'}</td>
+          <td>${d.gpu || '-'}</td>
+          <td>${d.ram || '-'}</td>
+          <td>${d.totalPrice || '-'}</td>
+        </tr>
+      `;
+
+    });
+
+    if(!html){
+
+      html = `
+      <tr>
+        <td colspan="5">
+          <div class="table-empty">
+            <div class="e-icon">🖥️</div>
+            <p>No PC Orders Found</p>
+          </div>
+        </td>
+      </tr>
+      `;
+
+    }
+
+    document.getElementById('pcTableBody').innerHTML = html;
+
+    document.getElementById('pcCountBadge').textContent =
+      count + ' records';
+
+  });
+
+}
+function startITListener(){
+
+  const q = query(
+    collection(db, "itInfrastructureBookings"),
+    orderBy("createdAt", "desc")
+  );
+
+  onSnapshot(q, (snapshot)=>{
+
+    let html = '';
+    let count = 0;
+
+    snapshot.forEach((doc)=>{
+
+      count++;
+
+      const d = doc.data();
+
+      html += `
+        <tr>
+          <td>${count}</td>
+          <td>${d.companyName || '-'}</td>
+          <td>${d.service || '-'}</td>
+          <td>${d.phone || '-'}</td>
+        </tr>
+      `;
+
+    });
+
+    if(!html){
+
+      html = `
+      <tr>
+        <td colspan="4">
+          <div class="table-empty">
+            <div class="e-icon">🏢</div>
+            <p>No IT Inquiries Found</p>
+          </div>
+        </td>
+      </tr>
+      `;
+
+    }
+
+    document.getElementById('itTableBody').innerHTML = html;
+
+    document.getElementById('itCountBadge').textContent =
+      count + ' records';
+
+  });
+
+}
 window.manualRefresh = function() {
   if(window._unsubscribe) window._unsubscribe();
   window._allBookings = [];
@@ -975,16 +1145,41 @@ window.addEventListener('resize', checkMobile);
 
 window.setView = function(v){
 
+  document.querySelectorAll('.admin-section').forEach(sec=>{
+    sec.style.display = 'none';
+  });
+
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.remove('active');
   });
 
-  event.currentTarget.classList.add('active');
+  if(v === 'bookings'){
+    document.getElementById('bookingsSection').style.display = 'block';
+  }
 
-  alert(v + " section coming next");
+  if(v === 'inquiries'){
+    document.getElementById('inquiriesSection').style.display = 'block';
+  }
+
+  if(v === 'pcorders'){
+    document.getElementById('pcordersSection').style.display = 'block';
+  }
+
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+
+    const txt = btn.innerText.toLowerCase();
+
+    if(
+      (v === 'bookings' && txt.includes('mobile')) ||
+      (v === 'inquiries' && txt.includes('it')) ||
+      (v === 'pcorders' && txt.includes('pc'))
+    ){
+      btn.classList.add('active');
+    }
+
+  });
 
 };
-
 // Keyboard shortcut ESC
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeDrawer();
