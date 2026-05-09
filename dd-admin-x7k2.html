@@ -794,7 +794,7 @@ function startPCListener(){
 function startITListener(){
 
   const q = query(
-    collection(db, "itInfrastructureBookings"),
+    collection(db, "itInquiries"),
     orderBy("createdAt", "desc")
   );
 
@@ -1145,26 +1145,67 @@ window.addEventListener('resize', checkMobile);
 
 window.setView = function(v){
 
+  // hide all sections
   document.querySelectorAll('.admin-section').forEach(sec=>{
     sec.style.display = 'none';
   });
 
+  // remove active nav
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.remove('active');
   });
 
+  // references
+  const title = document.querySelector('.topbar-left h1');
+
+  const stat1Label = document.querySelectorAll('.stat-label')[0];
+  const stat2Label = document.querySelectorAll('.stat-label')[1];
+  const stat3Label = document.querySelectorAll('.stat-label')[2];
+  const stat4Label = document.querySelectorAll('.stat-label')[3];
+
+  // MOBILE BOOKINGS
   if(v === 'bookings'){
+
     document.getElementById('bookingsSection').style.display = 'block';
+
+    title.textContent = 'Mobile Bookings';
+
+    stat1Label.textContent = 'Total Bookings';
+    stat2Label.textContent = 'Hardware Issues';
+    stat3Label.textContent = 'Software Issues';
+    stat4Label.textContent = "Today's Requests";
+
   }
 
+  // IT INQUIRIES
   if(v === 'inquiries'){
+
     document.getElementById('inquiriesSection').style.display = 'block';
+
+    title.textContent = 'IT Infrastructure Inquiries';
+
+    stat1Label.textContent = 'Total Inquiries';
+    stat2Label.textContent = 'Enterprise Requests';
+    stat3Label.textContent = 'Network Services';
+    stat4Label.textContent = 'Today';
+
   }
 
+  // PC ORDERS
   if(v === 'pcorders'){
+
     document.getElementById('pcordersSection').style.display = 'block';
+
+    title.textContent = 'PC Build Orders';
+
+    stat1Label.textContent = 'Total Orders';
+    stat2Label.textContent = 'Gaming PCs';
+    stat3Label.textContent = 'Workstations';
+    stat4Label.textContent = 'Today';
+
   }
 
+  // activate sidebar button
   document.querySelectorAll('.nav-item').forEach(btn=>{
 
     const txt = btn.innerText.toLowerCase();
