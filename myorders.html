@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Orders — DeviceDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --white:#ffffff;--black:#0c0c0c;--off:#f7f6f3;
+  --amber:#f59e0b;--amber-light:#fef3c7;--amber-dark:#b45309;
+  --gray:#6b7280;--gray-light:#e5e4e0;
+  --green:#16a34a;--green-light:#dcfce7;
+  --blue:#3b82f6;--blue-light:#dbeafe;
+  --red:#ef4444;--purple:#8b5cf6;
+  --radius:14px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--off);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh;}
+
+/* NAV — same as all pages */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:68px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-light);}
+.logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-.5px;color:var(--black);text-decoration:none;}
+.logo em{font-style:normal;background:var(--amber);color:var(--black);padding:1px 6px;border-radius:4px;margin-left:1px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.auth-logged-out{display:flex;align-items:center;gap:10px;}
+.auth-logged-in{display:none;}
+body.is-logged-in .auth-logged-out{display:none!important;}
+body.is-logged-in .auth-logged-in{display:flex!important;}
+.nav-login{background:transparent;color:var(--black);padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--gray-light);transition:border-color .2s,background .2s;}
+.nav-login:hover{border-color:var(--black);background:var(--off);}
+.nav-cta{background:var(--black);color:var(--white);padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--black);transition:background .2s,color .2s;}
+.nav-cta:hover{background:var(--amber);color:var(--black);border-color:var(--amber);}
+.profile-btn{width:38px;height:38px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:700;color:var(--white);transition:transform .2s;}
+.profile-btn:hover{transform:scale(1.08);}
+
+/* AUTH GUARD */
+#authGuard{position:fixed;inset:0;background:var(--off);display:flex;align-items:center;justify-content:center;z-index:999;display:none;}
+.guard-box{text-align:center;padding:40px;}
+.guard-box h2{font-family:'Clash Display',sans-serif;font-size:1.5rem;margin-bottom:10px;}
+.guard-box p{color:var(--gray);font-size:.9rem;margin-bottom:24px;}
+.guard-btn{background:var(--black);color:var(--white);padding:12px 28px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;display:inline-block;}
+.guard-btn:hover{background:var(--amber);color:var(--black);}
+
+/* PAGE */
+.page{padding:100px 64px 60px;max-width:1100px;margin:0 auto;}
+.page-header{margin-bottom:32px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--gray);margin-bottom:14px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;}
+.breadcrumb a:hover{color:var(--black);}
+.breadcrumb span{color:var(--amber);}
+.page-header h1{font-family:'Clash Display',sans-serif;font-size:2rem;font-weight:700;letter-spacing:-.8px;}
+.page-header p{color:var(--gray);font-size:.9rem;margin-top:5px;}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.mini-stat{
+  flex:1;min-width:140px;
+  background:var(--white);border:1.5px solid var(--gray-light);
+  border-radius:12px;padding:18px 20px;
+  display:flex;align-items:center;gap:12px;
+}
+.mini-stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.mini-stat-icon.amber{background:var(--amber-light);border:1px solid #fcd34d;}
+.mini-stat-icon.blue{background:var(--blue-light);border:1px solid #93c5fd;}
+.mini-stat-icon.green{background:var(--green-light);border:1px solid #86efac;}
+.mini-stat-num{font-family:'Clash Display',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:-.5px;line-height:1;}
+.mini-stat-label{font-size:.74rem;color:var(--gray);margin-top:3px;}
+
+/* CONTROLS */
+.controls{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:320px;}
+.search-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray);pointer-events:none;}
+.search-input{width:100%;padding:10px 14px 10px 36px;background:var(--white);border:1.5px solid var(--gray-light);border-radius:9px;font-family:'Instrument Sans',sans-serif;font-size:.88rem;color:var(--black);outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:var(--amber);}
+.filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{padding:8px 15px;border-radius:8px;font-size:.79rem;font-weight:600;border:1.5px solid var(--gray-light);background:var(--white);cursor:pointer;transition:all .18s;font-family:'Instrument Sans',sans-serif;color:var(--black);}
+.filter-btn:hover{border-color:var(--amber);}
+.filter-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* LOADING */
+.loading-wrap{text-align:center;padding:60px 24px;}
+.spinner{display:inline-block;width:28px;height:28px;border:3px solid var(--gray-light);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:14px;}
+.loading-wrap p{color:var(--gray);font-size:.9rem;}
+
+/* EMPTY */
+.empty-wrap{text-align:center;padding:70px 24px;}
+.empty-icon{font-size:3rem;margin-bottom:16px;opacity:.5;}
+.empty-wrap h3{font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:8px;}
+.empty-wrap p{color:var(--gray);font-size:.88rem;margin-bottom:24px;}
+.empty-btn{background:var(--black);color:var(--white);padding:12px 24px;border-radius:9px;font-weight:700;font-size:.88rem;text-decoration:none;display:inline-block;font-family:'Instrument Sans',sans-serif;transition:background .2s;}
+.empty-btn:hover{background:var(--amber);color:var(--black);}
+
+/* ORDER CARDS */
+.orders-list{display:flex;flex-direction:column;gap:14px;}
+.order-card{
+  background:var(--white);border:1.5px solid var(--gray-light);
+  border-radius:var(--radius);overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.order-card:hover{border-color:var(--amber);box-shadow:0 6px 24px rgba(0,0,0,.08);}
+.order-card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;gap:12px;flex-wrap:wrap;
+}
+.order-head-left{display:flex;align-items:center;gap:14px;}
+.order-device-icon{width:44px;height:44px;border-radius:10px;background:var(--off);border:1.5px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.order-device-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.98rem;margin-bottom:2px;}
+.order-device-model{font-size:.78rem;color:var(--gray);}
+.order-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.badge{padding:4px 10px;border-radius:100px;font-size:.72rem;font-weight:700;white-space:nowrap;}
+.badge.hardware{background:var(--amber-light);color:var(--amber-dark);border:1px solid #fcd34d;}
+.badge.software{background:var(--blue-light);color:var(--blue);border:1px solid #93c5fd;}
+.badge.status{background:var(--green-light);color:var(--green);border:1px solid #86efac;}
+.order-timestamp{font-size:.76rem;color:var(--gray);}
+
+.order-card-body{
+  border-top:1px solid var(--gray-light);
+  padding:16px 22px;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.order-detail-item .d-label{font-size:.72rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;}
+.order-detail-item .d-val{font-size:.86rem;color:var(--black);font-weight:500;}
+
+.order-card-foot{
+  border-top:1px solid var(--gray-light);
+  padding:13px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--off);
+}
+.issue-text{font-size:.82rem;color:var(--gray);font-style:italic;}
+.order-actions{display:flex;gap:8px;}
+.action-link{
+  padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;
+  text-decoration:none;border:1.5px solid var(--gray-light);color:var(--black);
+  font-family:'Instrument Sans',sans-serif;transition:border-color .2s,background .2s;cursor:pointer;background:var(--white);
+}
+.action-link:hover{border-color:var(--black);}
+.action-link.wa{border-color:rgba(37,211,102,.3);color:#16a34a;}
+.action-link.wa:hover{background:var(--green-light);}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:24px;}
+.page-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--gray-light);background:var(--white);color:var(--black);font-family:'Instrument Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .18s;}
+.page-btn:hover{border-color:var(--black);}
+.page-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* PROFILE PANEL (shared) */
+.profile-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.profile-overlay.open{opacity:1;pointer-events:all;}
+.profile-panel{position:fixed;top:0;right:0;bottom:0;z-index:901;width:300px;max-width:92vw;background:var(--white);box-shadow:-12px 0 48px rgba(0,0,0,.12);display:flex;flex-direction:column;transform:translateX(105%);transition:transform .38s cubic-bezier(.4,0,.2,1);}
+.profile-panel.open{transform:translateX(0);}
+.pp-header{padding:22px 20px 18px;border-bottom:1px solid var(--gray-light);display:flex;align-items:center;justify-content:space-between;}
+.pp-user{display:flex;align-items:center;gap:12px;}
+.pp-avatar{width:44px;height:44px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-size:.9rem;font-weight:700;color:var(--white);}
+.pp-guest-avatar{width:44px;height:44px;border-radius:50%;background:var(--off);border:2px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.pp-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.92rem;}
+.pp-email{font-size:.72rem;color:var(--gray);margin-top:2px;}
+.pp-close{width:28px;height:28px;border-radius:7px;background:var(--off);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--black);}
+.pp-body{flex:1;padding:10px;overflow-y:auto;}
+.pp-guest-section{padding:14px 10px;background:var(--off);border-radius:10px;margin-bottom:10px;text-align:center;}
+.pp-guest-section p{font-size:.8rem;color:var(--gray);margin-bottom:12px;line-height:1.5;}
+.pp-guest-btns{display:flex;gap:8px;}
+.pp-btn-login{flex:1;padding:9px;border-radius:8px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.pp-btn-login:hover{background:var(--amber);color:var(--black);}
+.pp-btn-signup{flex:1;padding:9px;border-radius:8px;background:transparent;color:var(--black);border:1.5px solid var(--gray-light);cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.pp-btn-signup:hover{border-color:var(--black);}
+.pp-nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--black);font-size:.86rem;font-weight:500;transition:background .16s;width:100%;border:none;background:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;text-align:left;}
+.pp-nav-item:hover{background:var(--off);}
+.pp-nav-item:hover .pp-ni-icon{background:var(--amber-light);border-color:#fcd34d;}
+.pp-ni-icon{width:32px;height:32px;border-radius:8px;background:var(--off);border:1px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:background .16s,border-color .16s;}
+.pp-ni-label{flex:1;}.pp-ni-arrow{color:var(--gray);font-size:.72rem;}
+.pp-divider{height:1px;background:var(--gray-light);margin:6px 2px;}
+.pp-footer{padding:12px;border-top:1px solid var(--gray-light);}
+.pp-signout{width:100%;padding:11px;border-radius:9px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;font-size:.86rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .18s;}
+.pp-signout:hover{background:#222;}
+body:not(.is-logged-in) .pp-logged-in-only{display:none;}
+body.is-logged-in .pp-guest-only{display:none;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .page{padding:90px 20px 40px;}
+  .order-card-body{grid-template-columns:1fr 1fr;}
+  .controls{flex-direction:column;align-items:stretch;}
+  .search-wrap{max-width:100%;}
+}
+@media(max-width:500px){.order-card-body{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="authGuard">
+  <div class="guard-box">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+    <h2>Sign in required</h2>
+    <p>Please log in to view your orders.</p>
+    <a href="login.html" class="guard-btn">Log In →</a>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="logo">Device<em>Deck</em></a>
+  <div class="nav-right">
+    <div class="auth-logged-out">
+      <a href="login.html" class="nav-login">Log In</a>
+      <a href="signup.html" class="nav-cta">Sign Up</a>
+    </div>
+    <button class="profile-btn auth-logged-in" onclick="ddOpenProfile()" id="navProfileBtn">?</button>
+  </div>
+</nav>
+
+<div class="page" id="pageContent">
+  <div class="page-header reveal">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>›</span>
+      <a href="myprofile.html">My Profile</a><span>›</span>
+      <span>My Orders</span>
+    </div>
+    <h1>My Orders</h1>
+    <p>All your service bookings and requests in one place.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row reveal">
+    <div class="mini-stat">
+      <div class="mini-stat-icon amber">📦</div>
+      <div><div class="mini-stat-num" id="statTotal">—</div><div class="mini-stat-label">Total Bookings</div></div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-icon blue">🔧</div>
+      <div><div class="mini-stat-num" id="statHW">—</div><div class="mini-stat-label">Hardware Issues</div></div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-icon green">✓</div>
+      <div><div class="mini-stat-num" id="statActive">—</div><div class="mini-stat-label">Active Bookings</div></div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls reveal">
+    <div class="search-wrap">
+      <span>🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="Search device, issue…" oninput="renderOrders()"/>
+    </div>
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Hardware',this)">🔧 Hardware</button>
+      <button class="filter-btn" onclick="setFilter('Software',this)">💻 Software</button>
+    </div>
+  </div>
+
+  <!-- ORDERS LIST -->
+  <div id="ordersContainer">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <p>Loading your bookings…</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE PANEL -->
+<div class="profile-overlay" id="profileOverlay" onclick="ddCloseProfile()"></div>
+<div class="profile-panel" id="profilePanel">
+  <div class="pp-header">
+    <div class="pp-user">
+      <div class="pp-avatar auth-logged-in" id="ppAvatar">?</div>
+      <div class="pp-guest-avatar auth-logged-out">👤</div>
+      <div><div class="pp-name" id="ppName">Guest</div><div class="pp-email" id="ppEmail">Not signed in</div></div>
+    </div>
+    <button class="pp-close" onclick="ddCloseProfile()">✕</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-guest-section pp-guest-only">
+      <p>Sign in to access your orders and profile.</p>
+      <div class="pp-guest-btns"><a href="login.html" class="pp-btn-login">Log In</a><a href="signup.html" class="pp-btn-signup">Sign Up</a></div>
+    </div>
+    <div class="pp-logged-in-only">
+      <a href="myprofile.html" class="pp-nav-item"><span class="pp-ni-icon">👤</span><span class="pp-ni-label">My Profile</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myorders.html" class="pp-nav-item" style="background:var(--amber-light);"><span class="pp-ni-icon">📦</span><span class="pp-ni-label">My Orders</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myaddresses.html" class="pp-nav-item"><span class="pp-ni-icon">📍</span><span class="pp-ni-label">My Addresses</span><span class="pp-ni-arrow">›</span></a>
+    </div>
+    <div class="pp-divider"></div>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">❓</span><span class="pp-ni-label">Help</span><span class="pp-ni-arrow">›</span></a>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">💬</span><span class="pp-ni-label">Contact Us</span><span class="pp-ni-arrow">›</span></a>
+  </div>
+  <div class="pp-footer pp-logged-in-only">
+    <button class="pp-signout" onclick="ddSignOut()">Sign Out →</button>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db, signOut as firebaseSignOut } from "./firebase.js";
+import {
+  collection, query, where, orderBy, onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+window._fbSignOut = () => firebaseSignOut(auth);
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  localStorage.setItem('userUID', user.uid);
+  // Real-time listener filtered by userUID
+  const q = query(
+    collection(db, 'mobileBookings'),
+    where('userUID', '==', user.uid),
+    orderBy('createdAt', 'desc')
+  );
+  onSnapshot(q, snapshot => {
+    const orders = [];
+    snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+    window._userOrders = orders;
+    updateStats(orders);
+    renderOrders();
+  }, err => {
+    // Fallback: show all if userUID not indexed yet
+    console.warn('Filter failed, showing all:', err.message);
+    const q2 = query(collection(db, 'mobileBookings'), orderBy('createdAt', 'desc'));
+    onSnapshot(q2, snap2 => {
+      const uid = localStorage.getItem('userUID');
+      const orders = [];
+      snap2.forEach(doc => {
+        const d = doc.data();
+        if (!d.userUID || d.userUID === uid || d.userEmail === localStorage.getItem('userEmail')) {
+          orders.push({ id: doc.id, ...d });
+        }
+      });
+      window._userOrders = orders;
+      updateStats(orders);
+      renderOrders();
+    });
+  });
+});
+
+function updateStats(orders) {
+  document.getElementById('statTotal').textContent = orders.length;
+  document.getElementById('statHW').textContent = orders.filter(o => o.issueType === 'Hardware').length;
+  document.getElementById('statActive').textContent = orders.length; // all active until status system added
+}
+window._updateStats = updateStats;
+</script>
+
+<script>
+let currentFilter = 'all';
+window._userOrders = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  if (!loggedIn) {
+    document.getElementById('authGuard').style.display = 'flex';
+    document.getElementById('pageContent').style.display = 'none';
+    return;
+  }
+  ddInitPanel();
+});
+
+window.setFilter = function(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOrders();
+};
+
+window.renderOrders = function() {
+  let orders = window._userOrders || [];
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+  if (currentFilter !== 'all') orders = orders.filter(o => o.issueType === currentFilter);
+  if (search) orders = orders.filter(o =>
+    (o.brand||'').toLowerCase().includes(search) ||
+    (o.model||'').toLowerCase().includes(search) ||
+    (o.issue||'').toLowerCase().includes(search) ||
+    (o.customIssue||'').toLowerCase().includes(search) ||
+    (o.customerName||'').toLowerCase().includes(search)
+  );
+
+  const container = document.getElementById('ordersContainer');
+
+  if (!orders.length) {
+    container.innerHTML = `
+      <div class="empty-wrap">
+        <div class="empty-icon">📭</div>
+        <h3>No bookings yet</h3>
+        <p>You haven't made any service bookings. Book a mobile repair to get started.</p>
+        <a href="mobile-services.html" class="empty-btn">Book a Repair →</a>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="orders-list">${orders.map((o, i) => orderCard(o, i)).join('')}</div>`;
+};
+
+function orderCard(o, idx) {
+  const ts = formatTs(o.createdAt);
+  const isHW = o.issueType === 'Hardware';
+  const issueLabel = o.issue || o.customIssue || '—';
+  const waNum = (o.whatsapp || o.customerPhone || '').replace(/\D/g,'');
+  const brandIcon = getBrandIcon(o.brand);
+  return `
+  <div class="order-card reveal">
+    <div class="order-card-head">
+      <div class="order-head-left">
+        <div class="order-device-icon">${brandIcon}</div>
+        <div>
+          <div class="order-device-name">${esc(o.brand||'—')} ${esc(o.model||'')}</div>
+          <div class="order-device-model">${esc(o.storage||'')}${o.storage?' · ':''}Booking #${String(idx+1).padStart(3,'0')}</div>
+        </div>
+      </div>
+      <div class="order-badges">
+        <span class="badge ${isHW?'hardware':'software'}">${isHW?'🔧 Hardware':'💻 Software'}</span>
+        <span class="badge status">✓ Booked</span>
+        <span class="order-timestamp">${ts}</span>
+      </div>
+    </div>
+    <div class="order-card-body">
+      <div class="order-detail-item">
+        <div class="d-label">Issue</div>
+        <div class="d-val">${esc(issueLabel)}</div>
+      </div>
+      <div class="order-detail-item">
+        <div class="d-label">Preferred Time</div>
+        <div class="d-val">${esc(o.preferredTime||'—')}</div>
+      </div>
+      <div class="order-detail-item">
+        <div class="d-label">Address</div>
+        <div class="d-val">${esc(o.address||'—')}</div>
+      </div>
+    </div>
+    <div class="order-card-foot">
+      <div class="issue-text">${o.customIssue && o.customIssue !== o.issue ? '"'+esc(o.customIssue)+'"' : '&nbsp;'}</div>
+      <div class="order-actions">
+        ${waNum ? `<a class="action-link wa" href="https://wa.me/91${waNum}" target="_blank">📲 WhatsApp</a>` : ''}
+        <a class="action-link" href="mobile-services.html">Book Again</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getBrandIcon(brand) {
+  const b = (brand||'').toLowerCase();
+  if (b.includes('samsung')) return '📱';
+  if (b.includes('apple') || b.includes('iphone')) return '🍎';
+  if (b.includes('oneplus')) return '1️⃣';
+  if (b.includes('oppo')) return '📱';
+  if (b.includes('vivo')) return '📱';
+  if (b.includes('redmi') || b.includes('xiaomi') || b.includes('mi')) return '📱';
+  return '📱';
+}
+
+function formatTs(ts) {
+  if (!ts) return '—';
+  let d;
+  if (ts.toDate) d = ts.toDate();
+  else if (ts.seconds) d = new Date(ts.seconds * 1000);
+  else return '—';
+  return d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ─── PROFILE PANEL ─── */
+function ddInitPanel() {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  const name  = localStorage.getItem('userName')  || 'Guest';
+  const email = localStorage.getItem('userEmail') || 'Not signed in';
+  if (loggedIn) document.body.classList.add('is-logged-in');
+  const ini = loggedIn && name !== 'Guest' ? name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+  document.getElementById('ppAvatar').textContent = ini;
+  document.getElementById('ppName').textContent = loggedIn ? name : 'Guest';
+  document.getElementById('ppEmail').textContent = loggedIn ? email : 'Not signed in';
+  document.getElementById('navProfileBtn').textContent = loggedIn ? ini : '👤';
+}
+window.ddOpenProfile = () => {
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profilePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.ddCloseProfile = () => {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.getElementById('profilePanel').classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.ddSignOut = function() {
+  const fb = window._fbSignOut;
+  function clear() {
+    ['loggedIn','userName','userEmail','userPhone','userUID','userPassword'].forEach(k => localStorage.removeItem(k));
+    window.location.href = 'index.html';
+  }
+  if (typeof fb === 'function') fb().then(clear).catch(clear);
+  else clear();
+};
+document.addEventListener('keydown', e => { if(e.key==='Escape') window.ddCloseProfile(); });
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*60);obs.unobserve(e.target);} });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+// Re-observe dynamically added cards
+const mutObs = new MutationObserver(() => {
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => obs.observe(el));
+});
+mutObs.observe(document.getElementById('ordersContainer'), {childList:true, subtree:true});
+</script>
+</body>
+</html>

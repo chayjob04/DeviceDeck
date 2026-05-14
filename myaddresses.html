@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Addresses — DeviceDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --white:#ffffff;--black:#0c0c0c;--off:#f7f6f3;
+  --amber:#f59e0b;--amber-light:#fef3c7;--amber-dark:#b45309;
+  --gray:#6b7280;--gray-light:#e5e4e0;
+  --green:#16a34a;--green-light:#dcfce7;--red:#ef4444;
+  --radius:14px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--off);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:68px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-light);}
+.logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-.5px;color:var(--black);text-decoration:none;}
+.logo em{font-style:normal;background:var(--amber);color:var(--black);padding:1px 6px;border-radius:4px;margin-left:1px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.auth-logged-out{display:flex;align-items:center;gap:10px;}
+.auth-logged-in{display:none;}
+body.is-logged-in .auth-logged-out{display:none!important;}
+body.is-logged-in .auth-logged-in{display:flex!important;}
+.nav-login{background:transparent;color:var(--black);padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--gray-light);transition:border-color .2s,background .2s;}
+.nav-login:hover{border-color:var(--black);background:var(--off);}
+.nav-cta{background:var(--black);color:var(--white);padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--black);transition:background .2s,color .2s;}
+.nav-cta:hover{background:var(--amber);color:var(--black);border-color:var(--amber);}
+.profile-btn{width:38px;height:38px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:700;color:var(--white);transition:transform .2s;}
+.profile-btn:hover{transform:scale(1.08);}
+
+/* AUTH GUARD */
+#authGuard{position:fixed;inset:0;background:var(--off);display:flex;align-items:center;justify-content:center;z-index:999;display:none;}
+.guard-box{text-align:center;padding:40px;}
+.guard-box h2{font-family:'Clash Display',sans-serif;font-size:1.5rem;margin-bottom:10px;}
+.guard-box p{color:var(--gray);font-size:.9rem;margin-bottom:24px;}
+.guard-btn{background:var(--black);color:var(--white);padding:12px 28px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;display:inline-block;}
+.guard-btn:hover{background:var(--amber);color:var(--black);}
+
+/* PAGE */
+.page{padding:100px 64px 60px;max-width:900px;margin:0 auto;}
+.page-header{margin-bottom:28px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--gray);margin-bottom:14px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;}
+.breadcrumb a:hover{color:var(--black);}
+.breadcrumb span{color:var(--amber);}
+.page-header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.page-header h1{font-family:'Clash Display',sans-serif;font-size:2rem;font-weight:700;letter-spacing:-.8px;}
+.page-header p{color:var(--gray);font-size:.9rem;margin-top:5px;}
+.btn-add{
+  display:flex;align-items:center;gap:8px;
+  background:var(--black);color:var(--white);
+  padding:11px 22px;border-radius:10px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:.88rem;font-weight:700;
+  border:none;cursor:pointer;
+  transition:background .2s,transform .15s;
+}
+.btn-add:hover{background:var(--amber);color:var(--black);transform:translateY(-1px);}
+
+/* ADDRESS GRID */
+.address-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;}
+
+.address-card{
+  background:var(--white);border:1.5px solid var(--gray-light);
+  border-radius:var(--radius);padding:22px;
+  position:relative;transition:border-color .2s,box-shadow .2s;
+}
+.address-card:hover{border-color:var(--amber);box-shadow:0 6px 24px rgba(0,0,0,.07);}
+.address-card.default-card{border-color:var(--amber);background:linear-gradient(135deg,var(--white),var(--amber-light));}
+
+.addr-type-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.addr-type-badge{
+  display:flex;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.addr-type-badge.home{color:var(--amber-dark);}
+.addr-type-badge.work{color:var(--blue, #3b82f6);}
+.addr-type-badge.other{color:var(--gray);}
+.default-badge{
+  background:var(--amber);color:var(--black);
+  font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:100px;
+}
+.addr-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.98rem;margin-bottom:3px;}
+.addr-phone{font-size:.8rem;color:var(--gray);margin-bottom:10px;}
+.addr-text{font-size:.86rem;color:var(--black);line-height:1.55;}
+.addr-pincode{font-size:.78rem;color:var(--gray);margin-top:4px;}
+
+.addr-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--gray-light);}
+.addr-btn{
+  padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;
+  border:1.5px solid var(--gray-light);background:none;cursor:pointer;
+  font-family:'Instrument Sans',sans-serif;color:var(--black);transition:all .18s;
+}
+.addr-btn:hover{border-color:var(--black);background:var(--off);}
+.addr-btn.set-default{color:var(--amber-dark);border-color:#fcd34d;}
+.addr-btn.set-default:hover{background:var(--amber-light);}
+.addr-btn.delete{color:var(--red);}
+.addr-btn.delete:hover{border-color:var(--red);background:#fef2f2;}
+
+/* EMPTY STATE */
+.empty-addresses{
+  grid-column:1/-1;text-align:center;
+  padding:60px 24px;background:var(--white);
+  border:1.5px dashed var(--gray-light);border-radius:var(--radius);
+}
+.empty-addresses .e-icon{font-size:2.5rem;margin-bottom:14px;opacity:.5;}
+.empty-addresses h3{font-family:'Clash Display',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.empty-addresses p{color:var(--gray);font-size:.85rem;}
+
+/* ADD/EDIT MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--white);border-radius:20px;
+  width:100%;max-width:540px;
+  padding:36px 36px;position:relative;
+  transform:translateY(20px);transition:transform .3s;
+  max-height:90vh;overflow-y:auto;
+}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--off);border:none;cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:background .2s;}
+.modal-close:hover{background:var(--gray-light);}
+.modal h2{font-family:'Clash Display',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:4px;}
+.modal-sub{color:var(--gray);font-size:.84rem;margin-bottom:24px;}
+
+/* TYPE SELECTOR */
+.type-selector{display:flex;gap:10px;margin-bottom:20px;}
+.type-opt{
+  flex:1;padding:10px;border-radius:10px;
+  border:1.5px solid var(--gray-light);background:var(--white);
+  cursor:pointer;text-align:center;transition:all .18s;
+  font-size:.82rem;font-weight:600;font-family:'Instrument Sans',sans-serif;
+}
+.type-opt:hover{border-color:var(--amber);}
+.type-opt.selected{background:var(--amber-light);border-color:var(--amber);color:var(--amber-dark);}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-row.single{grid-template-columns:1fr;}
+.form-group label{display:block;font-size:.78rem;font-weight:700;margin-bottom:6px;}
+.form-input{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--gray-light);border-radius:10px;
+  font-family:'Instrument Sans',sans-serif;font-size:.9rem;color:var(--black);
+  background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.form-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.1);}
+.form-input.error{border-color:var(--red);}
+textarea.form-input{resize:vertical;min-height:70px;}
+.field-err{font-size:.74rem;color:var(--red);margin-top:4px;display:none;}
+.field-err.show{display:block;}
+
+.default-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--off);border-radius:10px;
+  cursor:pointer;margin-bottom:20px;
+}
+.default-toggle input{accent-color:var(--amber);width:16px;height:16px;cursor:pointer;}
+.default-toggle span{font-size:.86rem;font-weight:500;}
+
+.modal-actions{display:flex;gap:10px;}
+.btn-primary{
+  flex:1;background:var(--black);color:var(--white);
+  padding:13px;border-radius:10px;font-family:'Instrument Sans',sans-serif;
+  font-size:.9rem;font-weight:700;border:none;cursor:pointer;
+  transition:background .2s,transform .15s;
+}
+.btn-primary:hover{background:var(--amber);color:var(--black);}
+.btn-secondary{
+  padding:12px 20px;border-radius:10px;background:none;
+  border:1.5px solid var(--gray-light);color:var(--black);
+  font-family:'Instrument Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;
+  transition:border-color .2s;
+}
+.btn-secondary:hover{border-color:var(--black);}
+
+/* SUCCESS TOAST */
+.toast{
+  position:fixed;bottom:28px;right:28px;z-index:999;
+  background:var(--black);color:var(--white);
+  padding:13px 20px;border-radius:10px;
+  font-size:.86rem;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  transform:translateY(80px);opacity:0;
+  transition:transform .3s,opacity .3s;
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--green);}
+.toast.error-t{background:var(--red);}
+
+/* PROFILE PANEL (shared) */
+.profile-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.profile-overlay.open{opacity:1;pointer-events:all;}
+.profile-panel{position:fixed;top:0;right:0;bottom:0;z-index:901;width:300px;max-width:92vw;background:var(--white);box-shadow:-12px 0 48px rgba(0,0,0,.12);display:flex;flex-direction:column;transform:translateX(105%);transition:transform .38s cubic-bezier(.4,0,.2,1);}
+.profile-panel.open{transform:translateX(0);}
+.pp-header{padding:22px 20px 18px;border-bottom:1px solid var(--gray-light);display:flex;align-items:center;justify-content:space-between;}
+.pp-user{display:flex;align-items:center;gap:12px;}
+.pp-avatar{width:44px;height:44px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-size:.9rem;font-weight:700;color:var(--white);}
+.pp-guest-avatar{width:44px;height:44px;border-radius:50%;background:var(--off);border:2px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.pp-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.92rem;}
+.pp-email{font-size:.72rem;color:var(--gray);margin-top:2px;}
+.pp-close{width:28px;height:28px;border-radius:7px;background:var(--off);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--black);}
+.pp-body{flex:1;padding:10px;overflow-y:auto;}
+.pp-guest-section{padding:14px 10px;background:var(--off);border-radius:10px;margin-bottom:10px;text-align:center;}
+.pp-guest-section p{font-size:.8rem;color:var(--gray);margin-bottom:12px;line-height:1.5;}
+.pp-guest-btns{display:flex;gap:8px;}
+.pp-btn-login{flex:1;padding:9px;border-radius:8px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.pp-btn-login:hover{background:var(--amber);color:var(--black);}
+.pp-btn-signup{flex:1;padding:9px;border-radius:8px;background:transparent;color:var(--black);border:1.5px solid var(--gray-light);cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.pp-btn-signup:hover{border-color:var(--black);}
+.pp-nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--black);font-size:.86rem;font-weight:500;transition:background .16s;width:100%;border:none;background:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;text-align:left;}
+.pp-nav-item:hover{background:var(--off);}
+.pp-nav-item:hover .pp-ni-icon{background:var(--amber-light);border-color:#fcd34d;}
+.pp-ni-icon{width:32px;height:32px;border-radius:8px;background:var(--off);border:1px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:background .16s,border-color .16s;}
+.pp-ni-label{flex:1;}.pp-ni-arrow{color:var(--gray);font-size:.72rem;}
+.pp-divider{height:1px;background:var(--gray-light);margin:6px 2px;}
+.pp-footer{padding:12px;border-top:1px solid var(--gray-light);}
+.pp-signout{width:100%;padding:11px;border-radius:9px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;font-size:.86rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .18s;}
+.pp-signout:hover{background:#222;}
+body:not(.is-logged-in) .pp-logged-in-only{display:none;}
+body.is-logged-in .pp-guest-only{display:none;}
+
+/* ANIMATIONS */
+@keyframes spin{to{transform:rotate(360deg);}}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .page{padding:90px 20px 40px;}
+  .address-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .modal{padding:28px 20px;}
+  .type-selector{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<div id="authGuard">
+  <div class="guard-box">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+    <h2>Sign in required</h2>
+    <p>Please log in to manage your addresses.</p>
+    <a href="login.html" class="guard-btn">Log In →</a>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="logo">Device<em>Deck</em></a>
+  <div class="nav-right">
+    <div class="auth-logged-out">
+      <a href="login.html" class="nav-login">Log In</a>
+      <a href="signup.html" class="nav-cta">Sign Up</a>
+    </div>
+    <button class="profile-btn auth-logged-in" onclick="ddOpenProfile()" id="navProfileBtn">?</button>
+  </div>
+</nav>
+
+<div class="page" id="pageContent">
+  <div class="page-header reveal">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>›</span>
+      <a href="myprofile.html">My Profile</a><span>›</span>
+      <span>My Addresses</span>
+    </div>
+    <div class="page-header-row">
+      <div>
+        <h1>My Addresses</h1>
+        <p>Saved addresses for doorstep service delivery.</p>
+      </div>
+      <button class="btn-add" onclick="openModal()">+ Add New Address</button>
+    </div>
+  </div>
+
+  <!-- ADDRESS GRID -->
+  <div class="address-grid" id="addressGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray);">
+      <div style="width:22px;height:22px;border:3px solid var(--gray-light);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;"></div>
+      Loading addresses…
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">Add New Address</h2>
+    <p class="modal-sub">Your address will be saved for service bookings.</p>
+
+    <!-- TYPE -->
+    <div class="type-selector">
+      <button class="type-opt selected" onclick="selectType('Home',this)">🏠 Home</button>
+      <button class="type-opt" onclick="selectType('Work',this)">🏢 Work</button>
+      <button class="type-opt" onclick="selectType('Other',this)">📍 Other</button>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input class="form-input" type="text" id="addrName" placeholder="Receiver's full name"/>
+        <div class="field-err" id="errName">Please enter a name</div>
+      </div>
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input class="form-input" type="tel" id="addrPhone" placeholder="10-digit mobile number"/>
+        <div class="field-err" id="errPhone">Please enter a valid phone number</div>
+      </div>
+    </div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Flat / House No. / Building *</label>
+        <input class="form-input" type="text" id="addrLine1" placeholder="e.g. Flat 4B, Sunrise Apartments"/>
+        <div class="field-err" id="errLine1">Please enter address line 1</div>
+      </div>
+    </div>
+    <div class="form-row single">
+      <div class="form-group">
+        <label>Area / Street / Colony</label>
+        <input class="form-input" type="text" id="addrLine2" placeholder="e.g. Banjara Hills, Road No. 12"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>City *</label>
+        <input class="form-input" type="text" id="addrCity" placeholder="e.g. Hyderabad"/>
+        <div class="field-err" id="errCity">Please enter city</div>
+      </div>
+      <div class="form-group">
+        <label>State *</label>
+        <input class="form-input" type="text" id="addrState" placeholder="e.g. Telangana"/>
+        <div class="field-err" id="errState">Please enter state</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>PIN Code *</label>
+        <input class="form-input" type="text" id="addrPin" placeholder="6-digit PIN" maxlength="6"/>
+        <div class="field-err" id="errPin">Please enter valid PIN code</div>
+      </div>
+      <div class="form-group">
+        <label>Landmark <span style="color:var(--gray);font-weight:400;">(optional)</span></label>
+        <input class="form-input" type="text" id="addrLandmark" placeholder="Near metro station…"/>
+      </div>
+    </div>
+
+    <label class="default-toggle">
+      <input type="checkbox" id="setDefault"/>
+      <span>Set as default address</span>
+    </label>
+
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveAddress()" id="saveBtn">Save Address</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Saved</div>
+
+<!-- PROFILE PANEL -->
+<div class="profile-overlay" id="profileOverlay" onclick="ddCloseProfile()"></div>
+<div class="profile-panel" id="profilePanel">
+  <div class="pp-header">
+    <div class="pp-user">
+      <div class="pp-avatar auth-logged-in" id="ppAvatar">?</div>
+      <div class="pp-guest-avatar auth-logged-out">👤</div>
+      <div><div class="pp-name" id="ppName">Guest</div><div class="pp-email" id="ppEmail">Not signed in</div></div>
+    </div>
+    <button class="pp-close" onclick="ddCloseProfile()">✕</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-guest-section pp-guest-only">
+      <p>Sign in to manage your addresses.</p>
+      <div class="pp-guest-btns"><a href="login.html" class="pp-btn-login">Log In</a><a href="signup.html" class="pp-btn-signup">Sign Up</a></div>
+    </div>
+    <div class="pp-logged-in-only">
+      <a href="myprofile.html" class="pp-nav-item"><span class="pp-ni-icon">👤</span><span class="pp-ni-label">My Profile</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myorders.html" class="pp-nav-item"><span class="pp-ni-icon">📦</span><span class="pp-ni-label">My Orders</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myaddresses.html" class="pp-nav-item" style="background:var(--amber-light);"><span class="pp-ni-icon">📍</span><span class="pp-ni-label">My Addresses</span><span class="pp-ni-arrow">›</span></a>
+    </div>
+    <div class="pp-divider"></div>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">❓</span><span class="pp-ni-label">Help</span><span class="pp-ni-arrow">›</span></a>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">💬</span><span class="pp-ni-label">Contact Us</span><span class="pp-ni-arrow">›</span></a>
+  </div>
+  <div class="pp-footer pp-logged-in-only">
+    <button class="pp-signout" onclick="ddSignOut()">Sign Out →</button>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db, signOut as firebaseSignOut } from "./firebase.js";
+import {
+  collection, doc, addDoc, updateDoc, deleteDoc,
+  onSnapshot, query, where, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+window._fbSignOut = () => firebaseSignOut(auth);
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  localStorage.setItem('userUID', user.uid);
+  const uid = user.uid;
+
+  const q = query(
+    collection(db, 'userAddresses'),
+    where('userUID', '==', uid),
+    orderBy('createdAt', 'desc')
+  );
+
+  onSnapshot(q, snap => {
+    const addrs = [];
+    snap.forEach(d => addrs.push({ id: d.id, ...d.data() }));
+    window._addresses = addrs;
+    renderAddresses();
+  });
+
+  // CRUD functions exposed to window
+  window._saveToFirestore = async (data) => {
+    if (data.id) {
+      const { id, ...rest } = data;
+      await updateDoc(doc(db, 'userAddresses', id), { ...rest, updatedAt: serverTimestamp() });
+    } else {
+      await addDoc(collection(db, 'userAddresses'), {
+        ...data, userUID: uid, createdAt: serverTimestamp()
+      });
+    }
+  };
+
+  window._deleteFromFirestore = async (id) => {
+    await deleteDoc(doc(db, 'userAddresses', id));
+  };
+
+  window._setDefaultFirestore = async (id) => {
+    // Unset all defaults for this user
+    const batch = [];
+    (window._addresses||[]).forEach(a => {
+      if (a.isDefault && a.id !== id) {
+        batch.push(updateDoc(doc(db, 'userAddresses', a.id), { isDefault: false }));
+      }
+    });
+    batch.push(updateDoc(doc(db, 'userAddresses', id), { isDefault: true }));
+    await Promise.all(batch);
+  };
+});
+</script>
+
+<script>
+window._addresses = [];
+let editingId = null;
+let selectedType = 'Home';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  if (!loggedIn) {
+    document.getElementById('authGuard').style.display = 'flex';
+    document.getElementById('pageContent').style.display = 'none';
+    return;
+  }
+  ddInitPanel();
+});
+
+function renderAddresses() {
+  const grid = document.getElementById('addressGrid');
+  const addrs = window._addresses || [];
+
+  if (!addrs.length) {
+    grid.innerHTML = `
+      <div class="empty-addresses reveal">
+        <div class="e-icon">📍</div>
+        <h3>No addresses saved yet</h3>
+        <p>Add your home or work address for faster service bookings.</p>
+      </div>`;
+    observeReveal();
+    return;
+  }
+
+  // Default first
+  const sorted = [...addrs].sort((a,b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0));
+
+  grid.innerHTML = sorted.map(a => addrCard(a)).join('');
+  observeReveal();
+}
+
+function addrCard(a) {
+  const typeClass = (a.type||'other').toLowerCase();
+  const typeIcon  = a.type === 'Home' ? '🏠' : a.type === 'Work' ? '🏢' : '📍';
+  return `
+  <div class="address-card ${a.isDefault ? 'default-card' : ''} reveal">
+    <div class="addr-type-row">
+      <div class="addr-type-badge ${typeClass}">${typeIcon} ${a.type||'Other'}</div>
+      ${a.isDefault ? '<span class="default-badge">Default</span>' : ''}
+    </div>
+    <div class="addr-name">${esc(a.name||'—')}</div>
+    <div class="addr-phone">${esc(a.phone||'—')}</div>
+    <div class="addr-text">
+      ${esc(a.line1||'')}${a.line2?', '+esc(a.line2):''}
+    </div>
+    <div class="addr-text" style="margin-top:3px;">
+      ${esc(a.city||'')}${a.state?', '+esc(a.state):''}
+    </div>
+    ${a.landmark ? `<div class="addr-text" style="color:var(--gray);font-size:.78rem;margin-top:2px;">Near: ${esc(a.landmark)}</div>` : ''}
+    <div class="addr-pincode">PIN: ${esc(a.pin||'—')}</div>
+    <div class="addr-actions">
+      <button class="addr-btn" onclick="editAddress('${a.id}')">✏ Edit</button>
+      ${!a.isDefault ? `<button class="addr-btn set-default" onclick="setDefault('${a.id}')">☆ Set Default</button>` : ''}
+      <button class="addr-btn delete" onclick="deleteAddress('${a.id}')">🗑 Delete</button>
+    </div>
+  </div>`;
+}
+
+window.openModal = function(id) {
+  editingId = null;
+  selectedType = 'Home';
+  document.getElementById('modalTitle').textContent = 'Add New Address';
+  clearForm();
+  selectTypeByName('Home');
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.editAddress = function(id) {
+  const addr = (window._addresses||[]).find(a => a.id === id);
+  if (!addr) return;
+  editingId = id;
+  selectedType = addr.type || 'Home';
+  document.getElementById('modalTitle').textContent = 'Edit Address';
+  document.getElementById('addrName').value     = addr.name    || '';
+  document.getElementById('addrPhone').value    = addr.phone   || '';
+  document.getElementById('addrLine1').value    = addr.line1   || '';
+  document.getElementById('addrLine2').value    = addr.line2   || '';
+  document.getElementById('addrCity').value     = addr.city    || '';
+  document.getElementById('addrState').value    = addr.state   || '';
+  document.getElementById('addrPin').value      = addr.pin     || '';
+  document.getElementById('addrLandmark').value = addr.landmark|| '';
+  document.getElementById('setDefault').checked = addr.isDefault || false;
+  selectTypeByName(selectedType);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeModal = function() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  editingId = null;
+};
+
+window.selectType = function(type, btn) {
+  selectedType = type;
+  document.querySelectorAll('.type-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+};
+
+function selectTypeByName(type) {
+  document.querySelectorAll('.type-opt').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent.includes(type));
+  });
+}
+
+function clearForm() {
+  ['addrName','addrPhone','addrLine1','addrLine2','addrCity','addrState','addrPin','addrLandmark'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('error');
+  });
+  ['errName','errPhone','errLine1','errCity','errState','errPin'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+  });
+  document.getElementById('setDefault').checked = false;
+}
+
+window.saveAddress = async function() {
+  // Validate
+  let valid = true;
+  const required = [
+    ['addrName', 'errName', v => v.trim().length > 0],
+    ['addrPhone','errPhone', v => /^[6-9]\d{9}$/.test(v.replace(/\s/g,''))],
+    ['addrLine1','errLine1', v => v.trim().length > 0],
+    ['addrCity', 'errCity',  v => v.trim().length > 0],
+    ['addrState','errState', v => v.trim().length > 0],
+    ['addrPin',  'errPin',   v => /^\d{6}$/.test(v.trim())],
+  ];
+  required.forEach(([inputId, errId, fn]) => {
+    const val = document.getElementById(inputId).value;
+    if (!fn(val)) {
+      document.getElementById(inputId).classList.add('error');
+      document.getElementById(errId).classList.add('show');
+      valid = false;
+    } else {
+      document.getElementById(inputId).classList.remove('error');
+      document.getElementById(errId).classList.remove('show');
+    }
+  });
+  if (!valid) return;
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const data = {
+    type:     selectedType,
+    name:     document.getElementById('addrName').value.trim(),
+    phone:    document.getElementById('addrPhone').value.trim(),
+    line1:    document.getElementById('addrLine1').value.trim(),
+    line2:    document.getElementById('addrLine2').value.trim(),
+    city:     document.getElementById('addrCity').value.trim(),
+    state:    document.getElementById('addrState').value.trim(),
+    pin:      document.getElementById('addrPin').value.trim(),
+    landmark: document.getElementById('addrLandmark').value.trim(),
+    isDefault:document.getElementById('setDefault').checked,
+  };
+  if (editingId) data.id = editingId;
+
+  try {
+    if (window._saveToFirestore) {
+      await window._saveToFirestore(data);
+      // If setting as default, unset others
+      if (data.isDefault && window._setDefaultFirestore && data.id) {
+        await window._setDefaultFirestore(data.id);
+      }
+    }
+    closeModal();
+    showToast('✓ Address saved successfully', 'success');
+  } catch(e) {
+    showToast('✗ ' + e.message, 'error-t');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Address';
+  }
+};
+
+window.deleteAddress = async function(id) {
+  if (!confirm('Delete this address?')) return;
+  try {
+    if (window._deleteFromFirestore) await window._deleteFromFirestore(id);
+    showToast('Address deleted', 'success');
+  } catch(e) {
+    showToast('✗ ' + e.message, 'error-t');
+  }
+};
+
+window.setDefault = async function(id) {
+  try {
+    if (window._setDefaultFirestore) await window._setDefaultFirestore(id);
+    showToast('✓ Default address updated', 'success');
+  } catch(e) {
+    showToast('✗ ' + e.message, 'error-t');
+  }
+};
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type||'success') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ─── PROFILE PANEL ─── */
+function ddInitPanel() {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  const name  = localStorage.getItem('userName')  || 'Guest';
+  const email = localStorage.getItem('userEmail') || 'Not signed in';
+  if (loggedIn) document.body.classList.add('is-logged-in');
+  const ini = loggedIn && name !== 'Guest' ? name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+  document.getElementById('ppAvatar').textContent = ini;
+  document.getElementById('ppName').textContent = loggedIn ? name : 'Guest';
+  document.getElementById('ppEmail').textContent = loggedIn ? email : 'Not signed in';
+  document.getElementById('navProfileBtn').textContent = loggedIn ? ini : '👤';
+}
+window.ddOpenProfile = () => {
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profilePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.ddCloseProfile = () => {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.getElementById('profilePanel').classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.ddSignOut = function() {
+  const fb = window._fbSignOut;
+  function clear() {
+    ['loggedIn','userName','userEmail','userPhone','userUID','userPassword'].forEach(k => localStorage.removeItem(k));
+    window.location.href = 'index.html';
+  }
+  if (typeof fb === 'function') fb().then(clear).catch(clear);
+  else clear();
+};
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); window.ddCloseProfile(); } });
+
+function observeReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e,i) => { if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*80);obs.unobserve(e.target);} });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => obs.observe(el));
+}
+document.querySelectorAll('.reveal').forEach(el => {
+  new IntersectionObserver(([e]) => { if(e.isIntersecting){e.target.classList.add('in');} },{threshold:.1}).observe(el);
+});
+</script>
+</body>
+</html>

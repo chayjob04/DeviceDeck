@@ -1226,6 +1226,8 @@ try {
   issue: selectedIssue,
 
   customIssue: document.getElementById('customIssue').value,
+  userUID: localStorage.getItem('userUID') || '',
+  userEmail: localStorage.getItem('userEmail') || '',
 
   createdAt: serverTimestamp()
 

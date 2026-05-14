@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Profile — DeviceDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --white:#ffffff;--black:#0c0c0c;--off:#f7f6f3;
+  --amber:#f59e0b;--amber-light:#fef3c7;--amber-dark:#b45309;
+  --gray:#6b7280;--gray-light:#e5e4e0;--green:#16a34a;--red:#ef4444;
+  --radius:14px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--off);color:var(--black);font-family:'Instrument Sans',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:68px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-light);}
+.logo{font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-0.5px;color:var(--black);text-decoration:none;}
+.logo em{font-style:normal;background:var(--amber);color:var(--black);padding:1px 6px;border-radius:4px;margin-left:1px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-back{color:var(--gray);text-decoration:none;font-size:.88rem;font-weight:500;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.nav-back:hover{color:var(--black);}
+.profile-btn{width:38px;height:38px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:700;color:var(--white);transition:transform .2s;}
+.profile-btn:hover{transform:scale(1.08);}
+
+/* AUTH GUARD */
+#authGuard{position:fixed;inset:0;background:var(--off);display:flex;align-items:center;justify-content:center;z-index:999;}
+.guard-box{text-align:center;padding:40px;}
+.guard-box h2{font-family:'Clash Display',sans-serif;font-size:1.5rem;margin-bottom:10px;}
+.guard-box p{color:var(--gray);font-size:.9rem;margin-bottom:24px;}
+.guard-btn{background:var(--black);color:var(--white);padding:12px 28px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;}
+.guard-btn:hover{background:var(--amber);color:var(--black);}
+
+/* PAGE */
+.page{padding:100px 64px 60px;max-width:900px;margin:0 auto;}
+.page-header{margin-bottom:36px;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--gray);margin-bottom:14px;}
+.breadcrumb a{color:var(--gray);text-decoration:none;transition:color .2s;}
+.breadcrumb a:hover{color:var(--black);}
+.breadcrumb span{color:var(--amber);}
+.page-header h1{font-family:'Clash Display',sans-serif;font-size:2rem;font-weight:700;letter-spacing:-0.8px;}
+
+/* PROFILE CARD */
+.profile-hero{
+  background:var(--black);border-radius:20px;
+  padding:40px;display:flex;align-items:center;gap:28px;
+  margin-bottom:24px;position:relative;overflow:hidden;
+}
+.profile-hero::before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.15),transparent 70%);}
+.avatar-circle{
+  width:80px;height:80px;border-radius:50%;flex-shrink:0;
+  background:var(--amber);border:3px solid rgba(245,158,11,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Clash Display',sans-serif;font-size:1.8rem;font-weight:700;color:var(--black);
+}
+.profile-hero-info h2{font-family:'Clash Display',sans-serif;font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:4px;}
+.profile-hero-info p{color:#9ca3af;font-size:.88rem;}
+.profile-hero-badge{
+  margin-left:auto;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);
+  color:var(--amber);padding:6px 14px;border-radius:100px;font-size:.76rem;font-weight:700;
+  white-space:nowrap;position:relative;z-index:1;
+}
+
+/* SECTIONS */
+.section-card{
+  background:var(--white);border:1.5px solid var(--gray-light);
+  border-radius:var(--radius);margin-bottom:16px;overflow:hidden;
+}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 26px;border-bottom:1px solid var(--gray-light);
+}
+.section-head-left{display:flex;align-items:center;gap:12px;}
+.section-icon{width:36px;height:36px;border-radius:9px;background:var(--amber-light);border:1px solid #fcd34d;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+.section-title{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.98rem;}
+.section-sub{font-size:.78rem;color:var(--gray);margin-top:2px;}
+.edit-btn{
+  background:none;border:1.5px solid var(--gray-light);color:var(--black);
+  padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:600;
+  cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:border-color .2s,background .2s;
+}
+.edit-btn:hover{border-color:var(--black);background:var(--off);}
+.edit-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+.section-body{padding:24px 26px;}
+
+/* FORM FIELDS */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.field-row.single{grid-template-columns:1fr;}
+.field-group label{display:block;font-size:.78rem;font-weight:700;color:var(--black);margin-bottom:7px;letter-spacing:.2px;}
+.field-input{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--gray-light);border-radius:10px;
+  font-family:'Instrument Sans',sans-serif;font-size:.9rem;color:var(--black);
+  background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.field-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.1);}
+.field-input:disabled{background:var(--off);color:var(--gray);cursor:not-allowed;}
+.field-input.error{border-color:var(--red);}
+.field-error{font-size:.76rem;color:var(--red);margin-top:5px;display:none;}
+.field-error.show{display:block;}
+
+.save-row{display:flex;align-items:center;gap:12px;margin-top:20px;}
+.btn-save{
+  background:var(--black);color:var(--white);padding:11px 26px;border-radius:9px;
+  font-family:'Instrument Sans',sans-serif;font-size:.88rem;font-weight:700;
+  border:none;cursor:pointer;transition:background .2s,transform .15s;
+}
+.btn-save:hover{background:var(--amber);color:var(--black);transform:translateY(-1px);}
+.btn-cancel{
+  background:none;border:1.5px solid var(--gray-light);color:var(--gray);
+  padding:10px 20px;border-radius:9px;font-size:.88rem;font-weight:600;
+  cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:border-color .2s,color .2s;
+}
+.btn-cancel:hover{border-color:var(--black);color:var(--black);}
+.save-msg{font-size:.82rem;font-weight:600;display:none;align-items:center;gap:6px;}
+.save-msg.success{color:var(--green);display:flex;}
+.save-msg.error{color:var(--red);display:flex;}
+
+/* STATIC DISPLAY */
+.info-row{display:flex;gap:24px;flex-wrap:wrap;}
+.info-item{flex:1;min-width:180px;}
+.info-label{font-size:.74rem;color:var(--gray);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:4px;}
+.info-val{font-size:.92rem;font-weight:500;color:var(--black);}
+
+/* DANGER ZONE */
+.danger-zone{border-color:#fecaca;}
+.danger-section-icon{background:#fee2e2;border-color:#fca5a5;}
+.danger-zone .section-head{border-bottom-color:#fecaca;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .page{padding:90px 20px 40px;}
+  .profile-hero{flex-direction:column;text-align:center;align-items:center;}
+  .profile-hero-badge{margin-left:0;}
+  .field-row{grid-template-columns:1fr;}
+}
+
+/* PROFILE PANEL (shared) */
+.profile-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.profile-overlay.open{opacity:1;pointer-events:all;}
+.profile-panel{position:fixed;top:0;right:0;bottom:0;z-index:901;width:300px;max-width:92vw;background:var(--white);box-shadow:-12px 0 48px rgba(0,0,0,.12);display:flex;flex-direction:column;transform:translateX(105%);transition:transform .38s cubic-bezier(.4,0,.2,1);}
+.profile-panel.open{transform:translateX(0);}
+.pp-header{padding:22px 20px 18px;border-bottom:1px solid var(--gray-light);display:flex;align-items:center;justify-content:space-between;}
+.pp-user{display:flex;align-items:center;gap:12px;}
+.pp-avatar{width:44px;height:44px;border-radius:50%;background:var(--black);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-size:.9rem;font-weight:700;color:var(--white);}
+.pp-guest-avatar{width:44px;height:44px;border-radius:50%;background:var(--off);border:2px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.pp-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.92rem;}
+.pp-email{font-size:.72rem;color:var(--gray);margin-top:2px;}
+.pp-close{width:28px;height:28px;border-radius:7px;background:var(--off);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--black);}
+.pp-body{flex:1;padding:10px;overflow-y:auto;}
+.pp-guest-section{padding:14px 10px;background:var(--off);border-radius:10px;margin-bottom:10px;text-align:center;}
+.pp-guest-section p{font-size:.8rem;color:var(--gray);margin-bottom:12px;line-height:1.5;}
+.pp-guest-btns{display:flex;gap:8px;}
+.pp-btn-login{flex:1;padding:9px;border-radius:8px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.pp-btn-login:hover{background:var(--amber);color:var(--black);}
+.pp-btn-signup{flex:1;padding:9px;border-radius:8px;background:transparent;color:var(--black);border:1.5px solid var(--gray-light);cursor:pointer;font-size:.82rem;font-weight:600;font-family:'Instrument Sans',sans-serif;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:border-color .2s;}
+.pp-btn-signup:hover{border-color:var(--black);}
+.pp-nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--black);font-size:.86rem;font-weight:500;transition:background .16s;width:100%;border:none;background:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;text-align:left;}
+.pp-nav-item:hover{background:var(--off);}
+.pp-nav-item:hover .pp-ni-icon{background:var(--amber-light);border-color:#fcd34d;}
+.pp-ni-icon{width:32px;height:32px;border-radius:8px;background:var(--off);border:1px solid var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:background .16s,border-color .16s;}
+.pp-ni-label{flex:1;}
+.pp-ni-arrow{color:var(--gray);font-size:.72rem;}
+.pp-divider{height:1px;background:var(--gray-light);margin:6px 2px;}
+.pp-footer{padding:12px;border-top:1px solid var(--gray-light);}
+.pp-signout{width:100%;padding:11px;border-radius:9px;background:var(--black);color:var(--white);border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;font-size:.86rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .18s;}
+.pp-signout:hover{background:#222;}
+.auth-logged-out{display:flex;align-items:center;gap:10px;}
+.auth-logged-in{display:none;}
+body.is-logged-in .auth-logged-out{display:none!important;}
+body.is-logged-in .auth-logged-in{display:flex!important;}
+body:not(.is-logged-in) .pp-logged-in-only{display:none;}
+body.is-logged-in .pp-guest-only{display:none;}
+.nav-login{background:transparent;color:var(--black);padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--gray-light);transition:border-color .2s,background .2s;}
+.nav-login:hover{border-color:var(--black);background:var(--off);}
+.nav-cta{background:var(--black);color:var(--white);padding:10px 22px;border-radius:8px;font-size:.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--black);transition:background .2s,color .2s;}
+.nav-cta:hover{background:var(--amber);color:var(--black);border-color:var(--amber);}
+</style>
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<div id="authGuard" style="display:none;">
+  <div class="guard-box">
+    <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+    <h2>Sign in required</h2>
+    <p>Please log in to view your profile.</p>
+    <a href="login.html" class="guard-btn">Log In →</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Device<em>Deck</em></a>
+  <div class="nav-right">
+    <div class="auth-logged-out">
+      <a href="login.html" class="nav-login">Log In</a>
+      <a href="signup.html" class="nav-cta">Sign Up</a>
+    </div>
+    <button class="profile-btn auth-logged-in" onclick="ddOpenProfile()" id="navProfileBtn">?</button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page" id="pageContent">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span>My Profile</span>
+    </div>
+    <h1>My Profile</h1>
+  </div>
+
+  <!-- HERO -->
+  <div class="profile-hero reveal">
+    <div class="avatar-circle" id="heroAvatar">?</div>
+    <div class="profile-hero-info">
+      <h2 id="heroName">—</h2>
+      <p id="heroEmail">—</p>
+    </div>
+    <div class="profile-hero-badge">DeviceDeck Member</div>
+  </div>
+
+  <!-- PERSONAL INFO -->
+  <div class="section-card reveal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon">👤</div>
+        <div>
+          <div class="section-title">Personal Information</div>
+          <div class="section-sub">Your name and contact details</div>
+        </div>
+      </div>
+      <button class="edit-btn" id="editInfoBtn" onclick="toggleEdit('info')">Edit</button>
+    </div>
+    <div class="section-body">
+      <!-- DISPLAY VIEW -->
+      <div id="infoDisplay">
+        <div class="info-row">
+          <div class="info-item"><div class="info-label">Full Name</div><div class="info-val" id="dispName">—</div></div>
+          <div class="info-item"><div class="info-label">Email Address</div><div class="info-val" id="dispEmail">—</div></div>
+          <div class="info-item"><div class="info-label">Phone Number</div><div class="info-val" id="dispPhone">—</div></div>
+        </div>
+      </div>
+      <!-- EDIT VIEW -->
+      <div id="infoEdit" style="display:none;">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Full Name</label>
+            <input class="field-input" type="text" id="editName" placeholder="Your full name"/>
+          </div>
+          <div class="field-group">
+            <label>Phone Number</label>
+            <input class="field-input" type="tel" id="editPhone" placeholder="+91 98765 43210"/>
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field-group">
+            <label>Email Address <span style="color:var(--gray);font-weight:400;">(cannot be changed)</span></label>
+            <input class="field-input" type="email" id="editEmail" disabled/>
+          </div>
+        </div>
+        <div class="save-row">
+          <button class="btn-save" onclick="saveInfo()">Save Changes</button>
+          <button class="btn-cancel" onclick="toggleEdit('info')">Cancel</button>
+          <div class="save-msg" id="infoMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANGE PASSWORD -->
+  <div class="section-card reveal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon">🔐</div>
+        <div>
+          <div class="section-title">Password</div>
+          <div class="section-sub">Update your account password</div>
+        </div>
+      </div>
+      <button class="edit-btn" id="editPwdBtn" onclick="toggleEdit('pwd')">Change</button>
+    </div>
+    <div class="section-body">
+      <div id="pwdDisplay">
+        <div class="info-row">
+          <div class="info-item"><div class="info-label">Password</div><div class="info-val">••••••••••</div></div>
+        </div>
+      </div>
+      <div id="pwdEdit" style="display:none;">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Current Password</label>
+            <input class="field-input" type="password" id="currentPwd" placeholder="Enter current password"/>
+            <div class="field-error" id="currentPwdErr">Incorrect current password</div>
+          </div>
+          <div class="field-group">
+            <label>New Password</label>
+            <input class="field-input" type="password" id="newPwd" placeholder="Min. 6 characters"/>
+            <div class="field-error" id="newPwdErr">Password must be at least 6 characters</div>
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field-group">
+            <label>Confirm New Password</label>
+            <input class="field-input" type="password" id="confirmPwd" placeholder="Re-enter new password"/>
+            <div class="field-error" id="confirmPwdErr">Passwords do not match</div>
+          </div>
+        </div>
+        <div class="save-row">
+          <button class="btn-save" onclick="changePassword()">Update Password</button>
+          <button class="btn-cancel" onclick="toggleEdit('pwd')">Cancel</button>
+          <div class="save-msg" id="pwdMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT INFO -->
+  <div class="section-card reveal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon">ℹ️</div>
+        <div>
+          <div class="section-title">Account Details</div>
+          <div class="section-sub">Your DeviceDeck account info</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-row">
+        <div class="info-item"><div class="info-label">Account Status</div><div class="info-val" style="color:var(--green);font-weight:700;">✓ Active</div></div>
+        <div class="info-item"><div class="info-label">Member Since</div><div class="info-val" id="memberSince">—</div></div>
+        <div class="info-item"><div class="info-label">User ID</div><div class="info-val" style="font-size:.76rem;color:var(--gray);font-family:monospace;" id="userId">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="section-card reveal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon">⚡</div>
+        <div><div class="section-title">Quick Access</div><div class="section-sub">Jump to your other account pages</div></div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="info-row" style="gap:12px;">
+        <a href="myorders.html" style="flex:1;min-width:160px;display:flex;align-items:center;gap:12px;padding:16px;background:var(--off);border:1.5px solid var(--gray-light);border-radius:12px;text-decoration:none;color:var(--black);transition:border-color .2s,background .2s;" onmouseover="this.style.borderColor='var(--black)'" onmouseout="this.style.borderColor='var(--gray-light)'">
+          <span style="font-size:1.3rem;">📦</span>
+          <div><div style="font-weight:700;font-size:.9rem;font-family:'Clash Display',sans-serif;">My Orders</div><div style="font-size:.76rem;color:var(--gray);">View booking history</div></div>
+        </a>
+        <a href="myaddresses.html" style="flex:1;min-width:160px;display:flex;align-items:center;gap:12px;padding:16px;background:var(--off);border:1.5px solid var(--gray-light);border-radius:12px;text-decoration:none;color:var(--black);transition:border-color .2s,background .2s;" onmouseover="this.style.borderColor='var(--black)'" onmouseout="this.style.borderColor='var(--gray-light)'">
+          <span style="font-size:1.3rem;">📍</span>
+          <div><div style="font-weight:700;font-size:.9rem;font-family:'Clash Display',sans-serif;">My Addresses</div><div style="font-size:.76rem;color:var(--gray);">Manage saved addresses</div></div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DANGER ZONE -->
+  <div class="section-card danger-zone reveal">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-icon danger-section-icon">⚠️</div>
+        <div><div class="section-title" style="color:var(--red);">Sign Out</div><div class="section-sub">Sign out from all DeviceDeck services</div></div>
+      </div>
+      <button class="btn-save" style="background:var(--red);padding:9px 20px;" onclick="ddSignOut()">Sign Out</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROFILE PANEL -->
+<div class="profile-overlay" id="profileOverlay" onclick="ddCloseProfile()"></div>
+<div class="profile-panel" id="profilePanel">
+  <div class="pp-header">
+    <div class="pp-user">
+      <div class="pp-avatar auth-logged-in" id="ppAvatar">?</div>
+      <div class="pp-guest-avatar auth-logged-out">👤</div>
+      <div><div class="pp-name" id="ppName">Guest</div><div class="pp-email" id="ppEmail">Not signed in</div></div>
+    </div>
+    <button class="pp-close" onclick="ddCloseProfile()">✕</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-guest-section pp-guest-only">
+      <p>Sign in to access your profile, orders and addresses.</p>
+      <div class="pp-guest-btns">
+        <a href="login.html" class="pp-btn-login">Log In</a>
+        <a href="signup.html" class="pp-btn-signup">Sign Up</a>
+      </div>
+    </div>
+    <div class="pp-logged-in-only">
+      <a href="myprofile.html" class="pp-nav-item" style="background:var(--amber-light);"><span class="pp-ni-icon">👤</span><span class="pp-ni-label">My Profile</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myorders.html" class="pp-nav-item"><span class="pp-ni-icon">📦</span><span class="pp-ni-label">My Orders</span><span class="pp-ni-arrow">›</span></a>
+      <a href="myaddresses.html" class="pp-nav-item"><span class="pp-ni-icon">📍</span><span class="pp-ni-label">My Addresses</span><span class="pp-ni-arrow">›</span></a>
+    </div>
+    <div class="pp-divider"></div>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">❓</span><span class="pp-ni-label">Help</span><span class="pp-ni-arrow">›</span></a>
+    <a href="#" class="pp-nav-item"><span class="pp-ni-icon">💬</span><span class="pp-ni-label">Contact Us</span><span class="pp-ni-arrow">›</span></a>
+  </div>
+  <div class="pp-footer pp-logged-in-only">
+    <button class="pp-signout" onclick="ddSignOut()">Sign Out →</button>
+  </div>
+</div>
+
+<script type="module">
+import {
+  auth, db, signOut as firebaseSignOut
+} from "./firebase.js";
+import {
+  getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential, updateProfile
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import {
+  doc, setDoc, getDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+window._fbSignOut = () => firebaseSignOut(auth);
+window._fbUpdatePassword = async (currentPwd, newPwd) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("Not logged in");
+  const cred = EmailAuthProvider.credential(user.email, currentPwd);
+  await reauthenticateWithCredential(user, cred);
+  await updatePassword(user, newPwd);
+};
+window._fbUpdateProfile = async (name) => {
+  const user = auth.currentUser;
+  if (user) await updateProfile(user, { displayName: name });
+};
+window._fbGetUser = () => auth.currentUser;
+
+// Save profile to Firestore
+window._saveProfileFirestore = async (data) => {
+  const uid = localStorage.getItem('userUID');
+  if (!uid) return;
+  await setDoc(doc(db, 'users', uid), data, { merge: true });
+};
+
+// Get creation time from Firebase user
+auth.onAuthStateChanged(user => {
+  if (user) {
+    const created = user.metadata?.creationTime;
+    if (created) {
+      document.getElementById('memberSince').textContent =
+        new Date(created).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+    }
+    const uid = user.uid;
+    localStorage.setItem('userUID', uid);
+    document.getElementById('userId').textContent = uid;
+  }
+});
+</script>
+
+<script>
+/* ─── AUTH CHECK ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  if (!loggedIn) {
+    document.getElementById('authGuard').style.display = 'flex';
+    document.getElementById('pageContent').style.display = 'none';
+    return;
+  }
+  initProfile();
+  ddInitPanel();
+});
+
+function initProfile() {
+  const name  = localStorage.getItem('userName')  || '—';
+  const email = localStorage.getItem('userEmail') || '—';
+  const phone = localStorage.getItem('userPhone') || '—';
+  const uid   = localStorage.getItem('userUID')   || '—';
+
+  // Hero
+  const initials = name !== '—' ? name.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+  document.getElementById('heroAvatar').textContent = initials;
+  document.getElementById('heroName').textContent   = name;
+  document.getElementById('heroEmail').textContent  = email;
+  document.getElementById('userId').textContent     = uid;
+
+  // Display values
+  document.getElementById('dispName').textContent  = name;
+  document.getElementById('dispEmail').textContent = email;
+  document.getElementById('dispPhone').textContent = phone;
+
+  // Edit form pre-fill
+  document.getElementById('editName').value  = name !== '—' ? name : '';
+  document.getElementById('editEmail').value = email !== '—' ? email : '';
+  document.getElementById('editPhone').value = phone !== '—' ? phone : '';
+
+  // Member since (fallback)
+  if (document.getElementById('memberSince').textContent === '—') {
+    document.getElementById('memberSince').textContent = 'DeviceDeck Member';
+  }
+}
+
+function toggleEdit(section) {
+  if (section === 'info') {
+    const edit = document.getElementById('infoEdit');
+    const disp = document.getElementById('infoDisplay');
+    const btn  = document.getElementById('editInfoBtn');
+    const isOpen = edit.style.display !== 'none';
+    edit.style.display = isOpen ? 'none' : 'block';
+    disp.style.display = isOpen ? 'block' : 'none';
+    btn.textContent = isOpen ? 'Edit' : 'Cancel';
+    btn.classList.toggle('active', !isOpen);
+    document.getElementById('infoMsg').className = 'save-msg';
+  } else {
+    const edit = document.getElementById('pwdEdit');
+    const disp = document.getElementById('pwdDisplay');
+    const btn  = document.getElementById('editPwdBtn');
+    const isOpen = edit.style.display !== 'none';
+    edit.style.display = isOpen ? 'none' : 'block';
+    disp.style.display = isOpen ? 'block' : 'none';
+    btn.textContent = isOpen ? 'Change' : 'Cancel';
+    btn.classList.toggle('active', !isOpen);
+    document.getElementById('pwdMsg').className = 'save-msg';
+  }
+}
+
+async function saveInfo() {
+  const name  = document.getElementById('editName').value.trim();
+  const phone = document.getElementById('editPhone').value.trim();
+  if (!name) return;
+
+  try {
+    // Update localStorage
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userPhone', phone);
+
+    // Update Firebase Auth profile name
+    if (window._fbUpdateProfile) await window._fbUpdateProfile(name);
+
+    // Save to Firestore
+    if (window._saveProfileFirestore) {
+      await window._saveProfileFirestore({
+        name, phone,
+        email: localStorage.getItem('userEmail'),
+        updatedAt: new Date().toISOString()
+      });
+    }
+
+    // Update UI
+    document.getElementById('dispName').textContent  = name;
+    document.getElementById('dispPhone').textContent = phone || '—';
+    document.getElementById('heroName').textContent  = name;
+    document.getElementById('heroAvatar').textContent = name.trim().split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+    const msg = document.getElementById('infoMsg');
+    msg.textContent = '✓ Profile updated successfully';
+    msg.className = 'save-msg success';
+    setTimeout(() => toggleEdit('info'), 1500);
+  } catch(e) {
+    const msg = document.getElementById('infoMsg');
+    msg.textContent = '✗ ' + e.message;
+    msg.className = 'save-msg error';
+  }
+}
+
+async function changePassword() {
+  const currentPwd = document.getElementById('currentPwd').value;
+  const newPwd     = document.getElementById('newPwd').value;
+  const confirmPwd = document.getElementById('confirmPwd').value;
+  let valid = true;
+
+  ['currentPwdErr','newPwdErr','confirmPwdErr'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+  });
+  ['currentPwd','newPwd','confirmPwd'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+
+  if (!currentPwd) { showFieldErr('currentPwd','currentPwdErr','Enter current password'); valid=false; }
+  if (newPwd.length < 6) { showFieldErr('newPwd','newPwdErr'); valid=false; }
+  if (newPwd !== confirmPwd) { showFieldErr('confirmPwd','confirmPwdErr'); valid=false; }
+  if (!valid) return;
+
+  const msg = document.getElementById('pwdMsg');
+  try {
+    await window._fbUpdatePassword(currentPwd, newPwd);
+    msg.textContent = '✓ Password updated';
+    msg.className = 'save-msg success';
+    document.getElementById('currentPwd').value = '';
+    document.getElementById('newPwd').value = '';
+    document.getElementById('confirmPwd').value = '';
+    setTimeout(() => toggleEdit('pwd'), 1600);
+  } catch(e) {
+    const errTxt = e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'
+      ? 'Incorrect current password' : e.message;
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      showFieldErr('currentPwd','currentPwdErr', errTxt);
+    }
+    msg.textContent = '✗ ' + errTxt;
+    msg.className = 'save-msg error';
+  }
+}
+
+function showFieldErr(inputId, errId, customText) {
+  document.getElementById(inputId).classList.add('error');
+  const el = document.getElementById(errId);
+  if (customText) el.textContent = customText;
+  el.classList.add('show');
+}
+
+/* ─── PROFILE PANEL ─── */
+function ddInitPanel() {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  const name  = localStorage.getItem('userName')  || 'Guest';
+  const email = localStorage.getItem('userEmail') || 'Not signed in';
+  if (loggedIn) document.body.classList.add('is-logged-in');
+  const initials = loggedIn && name !== 'Guest' ? name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+  document.querySelectorAll('.profile-btn').forEach(btn => btn.textContent = loggedIn ? initials : '👤');
+  document.getElementById('ppAvatar').textContent = initials;
+  document.getElementById('ppName').textContent   = loggedIn ? name : 'Guest';
+  document.getElementById('ppEmail').textContent  = loggedIn ? email : 'Not signed in';
+  document.getElementById('navProfileBtn').textContent = loggedIn ? initials : '👤';
+}
+
+window.ddOpenProfile = () => {
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profilePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.ddCloseProfile = () => {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.getElementById('profilePanel').classList.remove('open');
+  document.body.style.overflow = '';
+};
+window.ddSignOut = function() {
+  const fb = window._fbSignOut;
+  function clear() {
+    ['loggedIn','userName','userEmail','userPhone','userUID','userPassword'].forEach(k => localStorage.removeItem(k));
+    window.location.href = 'index.html';
+  }
+  if (typeof fb === 'function') fb().then(clear).catch(clear);
+  else clear();
+};
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') window.ddCloseProfile(); });
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*80);obs.unobserve(e.target);} });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

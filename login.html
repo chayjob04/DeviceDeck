@@ -670,6 +670,7 @@ signInWithEmailAndPassword(auth, email, pwd)
   // Save display name (may be null for email login — use email prefix)
   var dname = userCredential.user.displayName || userCredential.user.email.split('@')[0];
   localStorage.setItem("userName", dname);
+  localStorage.setItem("userUID", userCredential.user.uid);
 
   document.getElementById('loginForm').style.display = 'none';
 

@@ -1023,6 +1023,7 @@ createUserWithEmailAndPassword(auth, email, password)
   localStorage.setItem("userEmail", email);
 
   localStorage.setItem("userPhone", phone);
+  localStorage.setItem("userUID", userCredential.user.uid);
 
   document.getElementById('signupForm').style.display='none';
 
